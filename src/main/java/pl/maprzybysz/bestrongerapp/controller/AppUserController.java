@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.maprzybysz.bestrongerapp.model.AppUser;
+import pl.maprzybysz.bestrongerapp.model.LoginCredentials;
 import pl.maprzybysz.bestrongerapp.service.AppUserService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,4 +33,7 @@ public class AppUserController {
         appUserService.removeToken(token);
         return ResponseEntity.ok().build();
     }
+    //method provide with spring security
+    @PostMapping("/login")
+    public void fakeLogin(@RequestBody LoginCredentials credentials){}
 }
