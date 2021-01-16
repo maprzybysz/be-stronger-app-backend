@@ -54,7 +54,7 @@ public class AppUserServiceImpl implements AppUserService {
         verificationTokenRepo.save(verificationToken);
 
         String url = "http://" + request.getServerName() + ":" + request.getServerPort()+request.getContextPath()+
-                "/user/verify-token/"+token;
+                "/verify-token/"+token;
         try {
             mailSenderService.sendMail(appUser.getEmail(), "Verification Token", url, false);
         } catch (MessagingException e) {

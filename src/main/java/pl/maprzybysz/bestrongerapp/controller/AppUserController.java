@@ -8,9 +8,10 @@ import pl.maprzybysz.bestrongerapp.model.LoginCredentials;
 import pl.maprzybysz.bestrongerapp.service.AppUserService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @RestController
-@RequestMapping("/user")
 public class AppUserController {
 
     private AppUserService appUserService;
@@ -21,17 +22,17 @@ public class AppUserController {
     }
 
 
-    @PostMapping("/register")
+    @PostMapping("/sign-up")
     public ResponseEntity<?> saveUser(@RequestBody AppUser appUser, HttpServletRequest httpServletRequest) {
         appUserService.addNewUser(appUser, httpServletRequest);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/verify-token/{token}")
-    public ResponseEntity<?> verifyUser(@PathVariable String token) {
+    public void verifyUser(@PathVariable String token, HttpServletResponse response) throws IOException {
         appUserService.verifyToken(token);
         appUserService.removeToken(token);
-        return ResponseEntity.ok().build();
+        response.sendRedirect("http://localhost:3000/login");
     }
     //method provide with spring security
     @PostMapping("/login")
