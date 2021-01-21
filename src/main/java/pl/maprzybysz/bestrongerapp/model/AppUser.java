@@ -15,12 +15,17 @@ public class AppUser implements UserDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	@Column(nullable = false, unique = true)
 	private String username;
+	@Column(nullable = false)
 	private String password;
+	@Column(nullable = false, unique = true)
 	private String email;
 	private boolean isEnabled;
+	private boolean rulesAccepted;
 	@ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
 	private List<Role> roles;
+
 
 	public Long getId() {
 		return id;
@@ -64,6 +69,14 @@ public class AppUser implements UserDetails {
 		return this.isEnabled;
 	}
 
+	public boolean isRulesAccepted() {
+		return rulesAccepted;
+	}
+
+	public void setRulesAccepted(boolean rulesAccepted) {
+		this.rulesAccepted = rulesAccepted;
+	}
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<GrantedAuthority> authorities = new ArrayList<>();
@@ -75,6 +88,7 @@ public class AppUser implements UserDetails {
 	public void setRoles(List<Role> roles) {
 		this.roles = roles;
 	}
+
 
 	@Override
 	public boolean isAccountNonExpired() {
@@ -88,6 +102,18 @@ public class AppUser implements UserDetails {
 	public boolean isCredentialsNonExpired() {
 		return true;
 	}
-	
 
+	@Override
+	public String toString() {
+		return "AppUser{" +
+				"id=" + id +
+				", username='" + username + '\'' +
+				", password='" + password + '\'' +
+				", email='" + email + '\'' +
+				", isEnabled=" + isEnabled +
+				", rulesAccepted=" + rulesAccepted +
+				", roles=" + roles +
+
+				'}';
+	}
 }

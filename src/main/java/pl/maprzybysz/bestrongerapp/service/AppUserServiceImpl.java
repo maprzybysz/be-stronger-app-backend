@@ -45,7 +45,7 @@ public class AppUserServiceImpl implements AppUserService {
         List<Role> authorities = new ArrayList<>();
         Role defaultRole = roleRepo.findRoleByRole("ROLE_USER").get();
         authorities.add(defaultRole);
-
+        System.out.println(appUser.isRulesAccepted());
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
         appUser.setRoles(authorities);
         appUserRepo.save(appUser);

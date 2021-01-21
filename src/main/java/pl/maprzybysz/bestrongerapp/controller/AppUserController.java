@@ -34,6 +34,8 @@ public class AppUserController {
         appUserService.removeToken(token);
         response.sendRedirect("http://localhost:3000/login");
     }
+
+
     //method provide with spring security
     @PostMapping("/login")
     public void fakeLogin(@RequestBody LoginCredentials credentials){}
