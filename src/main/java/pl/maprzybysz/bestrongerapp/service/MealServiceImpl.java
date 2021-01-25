@@ -50,8 +50,9 @@ public class MealServiceImpl implements MealService {
 
     @Override
     public void saveEatenMeal(EatenMeal eatenMeal) {
-
-        eatenMeal.setMealDate(LocalDate.now());
+        if(eatenMeal.getMealDate()==null){
+            eatenMeal.setMealDate(LocalDate.now());
+        }
         eatenMealRepo.save(eatenMeal);
 
 
@@ -64,7 +65,7 @@ public class MealServiceImpl implements MealService {
     }
 
     @Override
-    public List<EatenMeal> getEatenMealsByUsernameAndMealDate(String username, Date date) {
+    public List<EatenMeal> getEatenMealsByUsernameAndMealDate(String username, LocalDate date) {
         List<EatenMeal> findMeals = eatenMealRepo.findEatenMealsByUsernameAndMealDate(username, date).get();
         return findMeals;
     }

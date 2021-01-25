@@ -31,7 +31,7 @@ VALUES (3,
 INSERT INTO eaten_meal (id, meal_date, meal_name, meal_time, total_carbohydrates, total_fat,
                                          total_goodness, total_grammage, total_protein, username)
 VALUES (4,
-    '2021-01-22',
+    '2021-01-21',
     'pizza z '
     'Biedronki',
     'obiad', 100, 100,

@@ -41,8 +41,8 @@ public class MealController {
         return ResponseEntity.ok(meals);
     }
 
-    @PostMapping("/saveEatenMeal/{username}")
-    public ResponseEntity<?> saveEatenMeal(@RequestBody EatenMeal eatenMeal, @PathVariable String username) {
+    @PostMapping("/saveEatenMeal")
+    public ResponseEntity<?> saveEatenMeal(@RequestBody EatenMeal eatenMeal) {
         mealService.saveEatenMeal(eatenMeal);
         return ResponseEntity.ok(HttpEntity.EMPTY);
     }
@@ -52,7 +52,12 @@ public class MealController {
         List<EatenMeal> eatenMeals = mealService.getEatenMealsByUsername(username);
         return ResponseEntity.ok(eatenMeals);
     }
-
+    @GetMapping("/getEatenMealByMealDate/{username}/{date}")
+    public ResponseEntity<?> getEatenMealByMealTime(@PathVariable String username, @PathVariable String date){
+        LocalDate localDate = LocalDate.parse(date);
+        List<EatenMeal> eatenMeals = mealService.getEatenMealsByUsernameAndMealDate(username, localDate);
+        return ResponseEntity.ok(eatenMeals);
+    }
     @GetMapping("/getEatenMealByMealTime/{username}/{date}/{mealTime}")
     public ResponseEntity<?> getEatenMealByMealTime(@PathVariable String username, @PathVariable String date,
                                                     @PathVariable String mealTime){

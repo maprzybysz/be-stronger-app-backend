@@ -14,7 +14,7 @@ public interface MealService {
     public List<Meal> searchMealByNameContains(String name);
     public void saveEatenMeal(EatenMeal eatenMeal);
     public List<EatenMeal> getEatenMealsByUsername(String username);
-    public List<EatenMeal> getEatenMealsByUsernameAndMealDate(String username, Date date);
+    public List<EatenMeal> getEatenMealsByUsernameAndMealDate(String username, LocalDate date);
     public List<EatenMeal> getEatenMealsByUsernameAndMealDateAndMealTime(String username, LocalDate date,
                                                                           String mealTime);
 

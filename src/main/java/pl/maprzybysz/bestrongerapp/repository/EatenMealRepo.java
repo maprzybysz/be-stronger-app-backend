@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface EatenMealRepo extends JpaRepository<EatenMeal, Long> {
     Optional<List<EatenMeal>> findEatenMealsByUsername(String username);
-    Optional<List<EatenMeal>> findEatenMealsByUsernameAndMealDate(String username, Date date);
+    Optional<List<EatenMeal>> findEatenMealsByUsernameAndMealDate(String username, LocalDate date);
     Optional<List<EatenMeal>> findEatenMealsByUsernameAndMealDateAndMealTime(String username, LocalDate date,
                                                                              String mealTime);
 }
