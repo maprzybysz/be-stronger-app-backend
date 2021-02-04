@@ -15,8 +15,9 @@ public class EatenMeal {
     @Column(nullable = false)
     private String mealName;
     @NotNull
-    @Column(nullable = false)
-    private String mealTime;
+    @Column(name = "meal_time", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private MealTime mealTime;
     @Column(nullable = false)
     private LocalDate mealDate;
     @NotNull
@@ -41,7 +42,7 @@ public class EatenMeal {
     public EatenMeal() {
     }
 
-    public EatenMeal(Long id, @NotNull String mealName, @NotNull String mealTime, LocalDate mealDate, @NotNull int totalGrammage, @NotNull int totalGoodness, @NotNull int totalProtein, @NotNull int totalCarbohydrates, @NotNull int totalFat, @NotNull String username) {
+    public EatenMeal(Long id, @NotNull String mealName, @NotNull MealTime mealTime, LocalDate mealDate, @NotNull int totalGrammage, @NotNull int totalGoodness, @NotNull int totalProtein, @NotNull int totalCarbohydrates, @NotNull int totalFat, @NotNull String username) {
         this.id = id;
         this.mealName = mealName;
         this.mealTime = mealTime;
@@ -70,11 +71,11 @@ public class EatenMeal {
         this.id = id;
     }
 
-    public String getMealTime() {
+    public MealTime getMealTime() {
         return mealTime;
     }
 
-    public void setMealTime(String mealTime) {
+    public void setMealTime(MealTime mealTime) {
         this.mealTime = mealTime;
     }
 

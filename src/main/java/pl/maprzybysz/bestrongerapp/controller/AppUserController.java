@@ -1,8 +1,11 @@
 package pl.maprzybysz.bestrongerapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.maprzybysz.bestrongerapp.exception.EmailAlreadyExistsException;
+import pl.maprzybysz.bestrongerapp.exception.UserAlreadyExistsException;
 import pl.maprzybysz.bestrongerapp.model.AppUser;
 import pl.maprzybysz.bestrongerapp.model.LoginCredentials;
 import pl.maprzybysz.bestrongerapp.service.AppUserService;
@@ -24,8 +27,14 @@ public class AppUserController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<?> saveUser(@RequestBody AppUser appUser, HttpServletRequest httpServletRequest) {
-        appUserService.addNewUser(appUser, httpServletRequest);
-        return ResponseEntity.ok().build();
+        try{
+            appUserService.addNewUser(appUser, httpServletRequest);
+            return  ResponseEntity.status(HttpStatus.CREATED).build();
+        }catch (UserAlreadyExistsException | EmailAlreadyExistsException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @GetMapping("/verify-token/{token}")

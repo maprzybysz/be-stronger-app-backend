@@ -1,16 +1,17 @@
 package pl.maprzybysz.bestrongerapp.controller;
 
-import org.apache.tomcat.jni.Local;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.maprzybysz.bestrongerapp.exception.MealDoesNotExistsException;
 import pl.maprzybysz.bestrongerapp.model.EatenMeal;
 import pl.maprzybysz.bestrongerapp.model.Meal;
 import pl.maprzybysz.bestrongerapp.service.MealService;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -29,10 +30,16 @@ public class MealController {
         mealService.addMeal(meal);
     }
 
-    @GetMapping("/getMeal/{name}")
-    public ResponseEntity<Meal> getMeal(@PathVariable String name) {
-        Meal meal = mealService.getMealByName(name);
-        return ResponseEntity.ok(meal);
+    @GetMapping("/getMealByName/{name}")
+    public ResponseEntity<?> getMealByName(@PathVariable String name) {
+        try{
+            Meal meal = mealService.getMealByName(name);
+            return ResponseEntity.ok(meal);
+        }catch (MealDoesNotExistsException e){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(e.getMessage());
+        }catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/searchMeals/{name}")
@@ -43,28 +50,39 @@ public class MealController {
 
     @PostMapping("/saveEatenMeal")
     public ResponseEntity<?> saveEatenMeal(@RequestBody EatenMeal eatenMeal) {
+        System.out.println(eatenMeal);
         mealService.saveEatenMeal(eatenMeal);
         return ResponseEntity.ok(HttpEntity.EMPTY);
     }
 
-    @GetMapping("/getEatenMeal/{username}")
-    public ResponseEntity<?> getEatenMeal(@PathVariable String username) {
+    @GetMapping("/getEatenMealsByUsername/{username}")
+    public ResponseEntity<?> getEatenMealsByUsername(@PathVariable String username) {
         List<EatenMeal> eatenMeals = mealService.getEatenMealsByUsername(username);
         return ResponseEntity.ok(eatenMeals);
     }
-    @GetMapping("/getEatenMealByMealDate/{username}/{date}")
-    public ResponseEntity<?> getEatenMealByMealTime(@PathVariable String username, @PathVariable String date){
+    @GetMapping("/getEatenMealsByMealDate/{username}/{date}")
+    public ResponseEntity<?> getEatenMealsByMealDate(@PathVariable String username, @PathVariable String date){
         LocalDate localDate = LocalDate.parse(date);
-        List<EatenMeal> eatenMeals = mealService.getEatenMealsByUsernameAndMealDate(username, localDate);
-        return ResponseEntity.ok(eatenMeals);
+        try{
+            List<EatenMeal> eatenMeals = mealService.getEatenMealsByUsernameAndMealDate(username, localDate);
+            return ResponseEntity.ok(eatenMeals);
+        }catch (TokenExpiredException e){
+          return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
-    @GetMapping("/getEatenMealByMealTime/{username}/{date}/{mealTime}")
-    public ResponseEntity<?> getEatenMealByMealTime(@PathVariable String username, @PathVariable String date,
-                                                    @PathVariable String mealTime){
-        LocalDate localDate = LocalDate.parse(date);
-        List<EatenMeal> eatenMeals = mealService.getEatenMealsByUsernameAndMealDateAndMealTime(username, localDate,
-                mealTime);
-        return ResponseEntity.ok(eatenMeals);
+
+    @CrossOrigin
+    @DeleteMapping("/deleteEatenMealById/{id}")
+    public ResponseEntity<?> deleteEatenMealById(@PathVariable Long id){
+        try{
+            mealService.deleteMealById(id);
+            return ResponseEntity.status(HttpStatus.OK).body("eatenMeal delete");
+        }catch(Exception e){
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
 }

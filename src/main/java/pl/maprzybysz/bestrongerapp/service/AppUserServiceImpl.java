@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.maprzybysz.bestrongerapp.exception.EmailAlreadyExistsException;
+import pl.maprzybysz.bestrongerapp.exception.UserAlreadyExistsException;
 import pl.maprzybysz.bestrongerapp.model.AppUser;
 import pl.maprzybysz.bestrongerapp.model.Role;
 import pl.maprzybysz.bestrongerapp.model.VerificationToken;
@@ -41,14 +43,24 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public void addNewUser(AppUser appUser, HttpServletRequest request) {
-
+        //Check credentials
+        if(appUserRepo.findByUsername(appUser.getUsername()).isPresent()){
+            throw new UserAlreadyExistsException();
+        }
+        if(appUserRepo.findByEmail(appUser.getEmail()).isPresent()){
+            throw new EmailAlreadyExistsException();
+        }
+        //Add user role
         List<Role> authorities = new ArrayList<>();
         Role defaultRole = roleRepo.findRoleByRole("ROLE_USER").get();
         authorities.add(defaultRole);
-        System.out.println(appUser.isRulesAccepted());
+
+        //Set user password
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
         appUser.setRoles(authorities);
         appUserRepo.save(appUser);
+
+        //Generate verification token
         String token = UUID.randomUUID().toString();
         VerificationToken verificationToken = new VerificationToken(token, appUser);
         verificationTokenRepo.save(verificationToken);

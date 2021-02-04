@@ -45,6 +45,10 @@ public class Meal {
         this.fat = fat;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
