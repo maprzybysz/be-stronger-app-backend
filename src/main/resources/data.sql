@@ -18,21 +18,21 @@ insert into meal(id, carbohydrates, description, fat, goodness, grammage, name, 
 VALUES (4, 100, 'pyszna pizza', 50, 1000, 100, 'Kerf pizza', 10);
 
 INSERT INTO eaten_meal (id, meal_date, meal_name, meal_time, total_carbohydrates, total_fat, total_goodness, total_grammage, total_protein, username)
-VALUES (1, '2021-01-21', 'pizza z Biedronki', 'śniadanie', 100, 100, 100, 100, 100, 'mefiu678');
+VALUES (1, '2021-01-21', 'pizza z Biedronki', 'KOLACJA', 100, 100, 100, 100, 100, 'mefiu678');
 INSERT INTO eaten_meal (id, meal_date, meal_name, meal_time, total_carbohydrates, total_fat,
                                          total_goodness, total_grammage, total_protein, username)
-VALUES (2, '2021-01-21', 'pizza z Biedronki', 'śniadanie', 100, 100, 100, 100, 100, 'mefiu678');
+VALUES (2, '2021-01-21', 'pizza z Biedronki', 'ŚNIADANIE', 100, 100, 100, 100, 100, 'mefiu678');
 INSERT INTO eaten_meal (id, meal_date, meal_name, meal_time, total_carbohydrates, total_fat,
                                          total_goodness, total_grammage, total_protein, username)
 VALUES (3,
     '2021-01-21',
     'pizza z Lidl',
-    'śniadanie', 100, 100, 100, 100, 100, 'mefiu678');
+    'PRZEKĄSKA', 100, 100, 100, 100, 100, 'mefiu678');
 INSERT INTO eaten_meal (id, meal_date, meal_name, meal_time, total_carbohydrates, total_fat,
                                          total_goodness, total_grammage, total_protein, username)
 VALUES (4,
     '2021-01-21',
     'pizza z '
     'Biedronki',
-    'obiad', 100, 100,
+    'OBIAD', 100, 100,
     100, 100, 100, 'mefiu678');
