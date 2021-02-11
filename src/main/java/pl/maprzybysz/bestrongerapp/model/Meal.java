@@ -15,9 +15,6 @@ public class Meal {
     private String name;
     @NotNull
     @Column(nullable = false)
-    private String description;
-    @NotNull
-    @Column(nullable = false)
     private int grammage;
     @NotNull
     @Column(nullable = false)
@@ -32,12 +29,14 @@ public class Meal {
     @Column(nullable = false)
     private int fat;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    private MealDetails mealDetails;
+
     public Meal() {
     }
 
-    public Meal(String name, String description, int grammage, int goodness, int protein, int carbohydrates, int fat) {
+    public Meal(String name, int grammage, int goodness, int protein, int carbohydrates, int fat) {
         this.name = name;
-        this.description = description;
         this.grammage = grammage;
         this.goodness = goodness;
         this.protein = protein;
@@ -49,6 +48,10 @@ public class Meal {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
@@ -57,13 +60,7 @@ public class Meal {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
-    }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public int getGrammage() {
         return grammage;
@@ -105,12 +102,19 @@ public class Meal {
         this.fat = fat;
     }
 
+    public MealDetails getMealDetails() {
+        return mealDetails;
+    }
+
+    public void setMealDetails(MealDetails mealDetails) {
+        this.mealDetails = mealDetails;
+    }
+
     @Override
     public String toString() {
         return "Meal{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
                 ", grammage=" + grammage +
                 ", goodness=" + goodness +
                 ", protein=" + protein +
