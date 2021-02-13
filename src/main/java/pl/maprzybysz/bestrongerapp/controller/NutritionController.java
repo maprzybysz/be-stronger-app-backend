@@ -9,20 +9,25 @@ import org.springframework.web.bind.annotation.*;
 import pl.maprzybysz.bestrongerapp.exception.MealDoesNotExistsException;
 import pl.maprzybysz.bestrongerapp.model.EatenMeal;
 import pl.maprzybysz.bestrongerapp.model.Meal;
-import pl.maprzybysz.bestrongerapp.service.MealService;
+import pl.maprzybysz.bestrongerapp.model.ShoppingListElement;
+import pl.maprzybysz.bestrongerapp.service.AppUserService;
+import pl.maprzybysz.bestrongerapp.service.NutritionService;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @RestController
 @RequestMapping("/meal")
-public class MealController {
+public class NutritionController {
 
-    private MealService mealService;
+    private NutritionService mealService;
+    private AppUserService appUserService;
+
 
     @Autowired
-    public MealController(MealService mealService) {
+    public NutritionController(NutritionService mealService, AppUserService appUserService) {
         this.mealService = mealService;
+        this.appUserService = appUserService;
     }
 
     @PostMapping("/addMeal")
@@ -48,11 +53,16 @@ public class MealController {
         return ResponseEntity.ok(meals);
     }
 
-    @PostMapping("/saveEatenMeal")
-    public ResponseEntity<?> saveEatenMeal(@RequestBody EatenMeal eatenMeal) {
-        System.out.println(eatenMeal);
-        mealService.saveEatenMeal(eatenMeal);
-        return ResponseEntity.ok(HttpEntity.EMPTY);
+    @PostMapping("/saveEatenMeal/{username}")
+    public ResponseEntity<?> saveEatenMeal(@RequestBody EatenMeal eatenMeal, @PathVariable String username) {
+        try{
+            mealService.saveEatenMeal(eatenMeal, username);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+
     }
 
     @GetMapping("/getEatenMealsByUsername/{username}")
@@ -84,5 +94,34 @@ public class MealController {
         }
 
     }
+    @GetMapping("/getShoppingList/{username}")
+    public ResponseEntity<?> getShoppingList(@PathVariable String username){
+        try{
+            List<ShoppingListElement> shoppingList = appUserService.getShoppingList(username);
+            return ResponseEntity.status(HttpStatus.OK).body(shoppingList);
+        }catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @DeleteMapping("/deleteShoppingListElement/{id}")
+    public ResponseEntity<?> deleteShoppingListElement(@PathVariable Long id){
+        try{
+            appUserService.deleteShoppingListElement(id);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @GetMapping("/addShoppingListElement/{username}/{listItem}")
+    public ResponseEntity<?> deleteShoppingListElement(@PathVariable String username, @PathVariable String listItem){
+        try{
+            appUserService.addShoppingListElement(username, listItem);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
 
 }

@@ -1,5 +1,7 @@
 package pl.maprzybysz.bestrongerapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -35,24 +37,12 @@ public class EatenMeal {
     @NotNull
     @Column(nullable = false)
     private int totalFat;
-    @NotNull
-    @Column(nullable = false)
-    private String username;
+    @ManyToOne
+    @JoinColumn(name="app_user_id")
+    @JsonIgnore
+    private AppUser appUser;
 
     public EatenMeal() {
-    }
-
-    public EatenMeal(Long id, @NotNull String mealName, @NotNull MealTime mealTime, LocalDate mealDate, @NotNull int totalGrammage, @NotNull int totalGoodness, @NotNull int totalProtein, @NotNull int totalCarbohydrates, @NotNull int totalFat, @NotNull String username) {
-        this.id = id;
-        this.mealName = mealName;
-        this.mealTime = mealTime;
-        this.mealDate = mealDate;
-        this.totalGrammage = totalGrammage;
-        this.totalGoodness = totalGoodness;
-        this.totalProtein = totalProtein;
-        this.totalCarbohydrates = totalCarbohydrates;
-        this.totalFat = totalFat;
-        this.username = username;
     }
 
     public String getMealName() {
@@ -127,12 +117,12 @@ public class EatenMeal {
         this.totalFat = totalFat;
     }
 
-    public String getUsername() {
-        return username;
+    public AppUser getAppUser() {
+        return appUser;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setAppUser(AppUser appUser) {
+        this.appUser = appUser;
     }
 
     @Override
@@ -146,8 +136,6 @@ public class EatenMeal {
                 ", totalGoodness=" + totalGoodness +
                 ", totalProtein=" + totalProtein +
                 ", totalCarbohydrates=" + totalCarbohydrates +
-                ", totalFat=" + totalFat +
-                ", username='" + username + '\'' +
-                '}';
+                ", totalFat=" + totalFat;
     }
 }

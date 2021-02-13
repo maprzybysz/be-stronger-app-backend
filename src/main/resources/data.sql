@@ -1,6 +1,11 @@
 insert into user_roles(id, role, description) VALUES (1, "ROLE_USER", "default role for user");
 insert into user_roles(id, role, description) VALUES (2, "ROLE_ADMIN", "default role for admin");
-insert into app_user(id, email, is_enabled, password, rules_accepted, username) VALUES (1, "notentego678@gmail.com", true,"$2a$10$JAu1KH2QCPGZqhyA0JUF0uurkrXOneGATPCvH9oikxKHFF6u7zrgC", true, "mefiu678");
+insert into app_user(id, email, is_enabled, password, rules_accepted, username)
+VALUES (1, "notentego678@gmail.com", true,"$2a$10$JAu1KH2QCPGZqhyA0JUF0uurkrXOneGATPCvH9oikxKHFF6u7zrgC", true, "mefiu678");
+insert into app_user(id, email, is_enabled, password, rules_accepted, username)
+VALUES (2, "testuser@gmail.com", true,"$2a$10$JAu1KH2QCPGZqhyA0JUF0uurkrXOneGATPCvH9oikxKHFF6u7zrgC", true,
+"testuser");
+insert into app_user_roles(app_user_id, roles_id) VALUES (1, 1);
 insert into app_user_roles(app_user_id, roles_id) VALUES (1, 1);
 insert into meal_details(id, description, img_url) VALUES (1, 'opis 1', 'url');
 insert into meal_details(id, description, img_url) VALUES (2, 'opis 2', 'url');
@@ -44,4 +49,11 @@ insert into meal(id, carbohydrates, fat, goodness, grammage, name, protein, meal
 VALUES (13, 100,  50,1000, 100, 'Produkt 13',10, 13);
 insert into meal(id, carbohydrates, fat, goodness, grammage, name, protein, meal_details_id)
 VALUES (14, 100,  50,1000, 100, 'Produkt 14',10, 14);
-
+insert into shopping_list_element(id, list_element, app_user_id) VALUES(1, 'produkt1', 1);
+insert into shopping_list_element(id, list_element, app_user_id) VALUES(2, 'produkt2', 1);
+insert into shopping_list_element(id, list_element, app_user_id) VALUES(3, 'produkt3', 2);
+insert into shopping_list_element(id, list_element, app_user_id) VALUES(4, 'produkt4', 1);
+insert into shopping_list_element(id, list_element, app_user_id) VALUES(5, 'produkt5', 1);
+insert into shopping_list_element(id, list_element, app_user_id) VALUES(6, 'produkt6', 2);
+insert into shopping_list_element(id, list_element, app_user_id) VALUES(7, 'produkt7', 2);
+insert into shopping_list_element(id, list_element, app_user_id) VALUES(8, 'produkt8', 1);

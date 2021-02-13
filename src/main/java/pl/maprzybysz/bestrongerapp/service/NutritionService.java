@@ -6,11 +6,11 @@ import pl.maprzybysz.bestrongerapp.model.Meal;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface MealService {
+public interface NutritionService {
     public void addMeal(Meal meal);
     public Meal getMealByName(String name);
     public List<Meal> searchMealByNameContains(String name);
-    public void saveEatenMeal(EatenMeal eatenMeal);
+    public void saveEatenMeal(EatenMeal eatenMeal, String username);
     public List<EatenMeal> getEatenMealsByUsername(String username);
     public List<EatenMeal> getEatenMealsByUsernameAndMealDate(String username, LocalDate date);
     public List<EatenMeal> getEatenMealsByUsernameAndMealDateAndMealTime(String username, LocalDate date,

@@ -25,7 +25,10 @@ public class AppUser implements UserDetails {
 	private boolean rulesAccepted;
 	@ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
 	private List<Role> roles;
-
+	@OneToMany(mappedBy = "appUser")
+	private List<ShoppingListElement> shoppingList;
+	@OneToMany(mappedBy = "appUser")
+	private List<EatenMeal> eatenMeals;
 
 	public Long getId() {
 		return id;
@@ -85,10 +88,31 @@ public class AppUser implements UserDetails {
 		}
 		return authorities;
 	}
+
+	public List<Role> getRoles() {
+		return roles;
+	}
+
 	public void setRoles(List<Role> roles) {
 		this.roles = roles;
 	}
 
+
+	public List<ShoppingListElement> getShoppingList() {
+		return shoppingList;
+	}
+
+	public void setShoppingList(List<ShoppingListElement> shoppingList) {
+		this.shoppingList = shoppingList;
+	}
+
+	public List<EatenMeal> getEatenMeals() {
+		return eatenMeals;
+	}
+
+	public void setEatenMeals(List<EatenMeal> eatenMeals) {
+		this.eatenMeals = eatenMeals;
+	}
 
 	@Override
 	public boolean isAccountNonExpired() {
@@ -113,7 +137,7 @@ public class AppUser implements UserDetails {
 				", isEnabled=" + isEnabled +
 				", rulesAccepted=" + rulesAccepted +
 				", roles=" + roles +
-
+				", shoppingList=" + shoppingList +
 				'}';
 	}
 }
