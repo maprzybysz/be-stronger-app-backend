@@ -1,4 +1,4 @@
-package pl.maprzybysz.bestrongerapp.model;
+package pl.maprzybysz.bestrongerapp.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.maprzybysz.bestrongerapp.exception.EmailAlreadyExistsException;
 import pl.maprzybysz.bestrongerapp.exception.UserAlreadyExistsException;
-import pl.maprzybysz.bestrongerapp.model.AppUser;
-import pl.maprzybysz.bestrongerapp.model.LoginCredentials;
+import pl.maprzybysz.bestrongerapp.Entity.AppUser;
+import pl.maprzybysz.bestrongerapp.Entity.LoginCredentials;
 import pl.maprzybysz.bestrongerapp.service.AppUserService;
 
 import javax.servlet.http.HttpServletRequest;

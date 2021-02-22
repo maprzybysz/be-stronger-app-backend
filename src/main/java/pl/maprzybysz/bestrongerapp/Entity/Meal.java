@@ -1,4 +1,6 @@
-package pl.maprzybysz.bestrongerapp.model;
+package pl.maprzybysz.bestrongerapp.Entity;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -28,20 +30,15 @@ public class Meal {
     @NotNull
     @Column(nullable = false)
     private int fat;
-
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name="app_user_id")
+    @JsonIgnore
+    private AppUser appUser;
     @OneToOne(fetch = FetchType.EAGER)
     private MealDetails mealDetails;
 
     public Meal() {
-    }
-
-    public Meal(String name, int grammage, int goodness, int protein, int carbohydrates, int fat) {
-        this.name = name;
-        this.grammage = grammage;
-        this.goodness = goodness;
-        this.protein = protein;
-        this.carbohydrates = carbohydrates;
-        this.fat = fat;
     }
 
     public Long getId() {
@@ -59,8 +56,6 @@ public class Meal {
     public void setName(String name) {
         this.name = name;
     }
-
-
 
     public int getGrammage() {
         return grammage;
@@ -110,6 +105,15 @@ public class Meal {
         this.mealDetails = mealDetails;
     }
 
+
+    public AppUser getAppUser() {
+        return appUser;
+    }
+
+    public void setAppUser(AppUser appUser) {
+        this.appUser = appUser;
+    }
+
     @Override
     public String toString() {
         return "Meal{" +
@@ -120,6 +124,7 @@ public class Meal {
                 ", protein=" + protein +
                 ", carbohydrates=" + carbohydrates +
                 ", fat=" + fat +
+                ", mealDetails=" + mealDetails +
                 '}';
     }
 }

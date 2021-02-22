@@ -2,7 +2,7 @@ package pl.maprzybysz.bestrongerapp.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import pl.maprzybysz.bestrongerapp.model.Role;
+import pl.maprzybysz.bestrongerapp.Entity.Role;
 
 import java.util.Optional;
 

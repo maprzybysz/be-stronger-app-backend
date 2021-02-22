@@ -1,7 +1,6 @@
-package pl.maprzybysz.bestrongerapp.model;
+package pl.maprzybysz.bestrongerapp.Entity;
 
 import javax.persistence.*;
-import java.util.Collection;
 
 @Entity
 @Table(name = "user_roles")

@@ -2,14 +2,14 @@ package pl.maprzybysz.bestrongerapp.controller;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.maprzybysz.bestrongerapp.exception.MealDoesNotExistsException;
-import pl.maprzybysz.bestrongerapp.model.EatenMeal;
-import pl.maprzybysz.bestrongerapp.model.Meal;
-import pl.maprzybysz.bestrongerapp.model.ShoppingListElement;
+import pl.maprzybysz.bestrongerapp.Entity.EatenMeal;
+import pl.maprzybysz.bestrongerapp.Entity.Meal;
+import pl.maprzybysz.bestrongerapp.Entity.DTO.MealDTO;
+import pl.maprzybysz.bestrongerapp.Entity.ShoppingListElement;
 import pl.maprzybysz.bestrongerapp.service.AppUserService;
 import pl.maprzybysz.bestrongerapp.service.NutritionService;
 
@@ -23,7 +23,6 @@ public class NutritionController {
     private NutritionService mealService;
     private AppUserService appUserService;
 
-
     @Autowired
     public NutritionController(NutritionService mealService, AppUserService appUserService) {
         this.mealService = mealService;
@@ -36,9 +35,9 @@ public class NutritionController {
     }
 
     @GetMapping("/getMealByName/{name}")
-    public ResponseEntity<?> getMealByName(@PathVariable String name) {
+    public ResponseEntity<?> getMealDTOByName(@PathVariable String name) {
         try{
-            Meal meal = mealService.getMealByName(name);
+            MealDTO meal = mealService.getMealDTOByName(name);
             return ResponseEntity.ok(meal);
         }catch (MealDoesNotExistsException e){
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body(e.getMessage());
@@ -46,10 +45,9 @@ public class NutritionController {
             return ResponseEntity.notFound().build();
         }
     }
-
     @GetMapping("/searchMeals/{name}")
     public ResponseEntity<?> getMealsContainsName(@PathVariable String name) {
-        List<Meal> meals = mealService.searchMealByNameContains(name);
+        List<MealDTO> meals = mealService.searchMealByNameContains(name);
         return ResponseEntity.ok(meals);
     }
 
@@ -61,10 +59,7 @@ public class NutritionController {
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
-
-
     }
-
     @GetMapping("/getEatenMealsByUsername/{username}")
     public ResponseEntity<?> getEatenMealsByUsername(@PathVariable String username) {
         List<EatenMeal> eatenMeals = mealService.getEatenMealsByUsername(username);
@@ -83,7 +78,7 @@ public class NutritionController {
         }
     }
 
-    @CrossOrigin
+
     @DeleteMapping("/deleteEatenMealById/{id}")
     public ResponseEntity<?> deleteEatenMealById(@PathVariable Long id){
         try{
@@ -92,7 +87,6 @@ public class NutritionController {
         }catch(Exception e){
             return ResponseEntity.notFound().build();
         }
-
     }
     @GetMapping("/getShoppingList/{username}")
     public ResponseEntity<?> getShoppingList(@PathVariable String username){
@@ -112,8 +106,8 @@ public class NutritionController {
             return ResponseEntity.notFound().build();
         }
     }
-    @GetMapping("/addShoppingListElement/{username}/{listItem}")
-    public ResponseEntity<?> deleteShoppingListElement(@PathVariable String username, @PathVariable String listItem){
+    @PostMapping("/addShoppingListElement/{username}/{listItem}")
+    public ResponseEntity<?> addShoppingListElement(@PathVariable String username, @PathVariable String listItem){
         try{
             appUserService.addShoppingListElement(username, listItem);
             return ResponseEntity.status(HttpStatus.OK).build();

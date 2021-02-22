@@ -1,4 +1,4 @@
-package pl.maprzybysz.bestrongerapp.model;
+package pl.maprzybysz.bestrongerapp.Entity;
 
 
 public class LoginCredentials {

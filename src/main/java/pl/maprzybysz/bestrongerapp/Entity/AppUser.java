@@ -1,4 +1,4 @@
-package pl.maprzybysz.bestrongerapp.model;
+package pl.maprzybysz.bestrongerapp.Entity;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -29,6 +29,10 @@ public class AppUser implements UserDetails {
 	private List<ShoppingListElement> shoppingList;
 	@OneToMany(mappedBy = "appUser")
 	private List<EatenMeal> eatenMeals;
+	@OneToMany(mappedBy = "appUser")
+	private List<Meal> createMeals;
+	@OneToOne(mappedBy = "appUser")
+	private AppUserDetails userDetails;
 
 	public Long getId() {
 		return id;
@@ -114,6 +118,22 @@ public class AppUser implements UserDetails {
 		this.eatenMeals = eatenMeals;
 	}
 
+	public List<Meal> getCreateMeals() {
+		return createMeals;
+	}
+
+	public void setCreateMeals(List<Meal> createMeals) {
+		this.createMeals = createMeals;
+	}
+
+	public AppUserDetails getUserDetails() {
+		return userDetails;
+	}
+
+	public void setUserDetails(AppUserDetails userDetails) {
+		this.userDetails = userDetails;
+	}
+
 	@Override
 	public boolean isAccountNonExpired() {
 		return true;
@@ -138,6 +158,9 @@ public class AppUser implements UserDetails {
 				", rulesAccepted=" + rulesAccepted +
 				", roles=" + roles +
 				", shoppingList=" + shoppingList +
+				", eatenMeals=" + eatenMeals +
+				", createMeals=" + createMeals +
+				", userDetails=" + userDetails +
 				'}';
 	}
 }

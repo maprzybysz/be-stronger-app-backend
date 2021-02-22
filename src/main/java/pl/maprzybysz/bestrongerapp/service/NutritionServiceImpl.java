@@ -2,16 +2,17 @@ package pl.maprzybysz.bestrongerapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.maprzybysz.bestrongerapp.Entity.DTO.MealDTO;
+import pl.maprzybysz.bestrongerapp.Entity.Mapper.MealMapper;
 import pl.maprzybysz.bestrongerapp.exception.MealDoesNotExistsException;
 import pl.maprzybysz.bestrongerapp.exception.UserDoesNotExistsException;
-import pl.maprzybysz.bestrongerapp.model.AppUser;
-import pl.maprzybysz.bestrongerapp.model.EatenMeal;
-import pl.maprzybysz.bestrongerapp.model.Meal;
+import pl.maprzybysz.bestrongerapp.Entity.*;
 import pl.maprzybysz.bestrongerapp.repository.AppUserRepo;
 import pl.maprzybysz.bestrongerapp.repository.EatenMealRepo;
 import pl.maprzybysz.bestrongerapp.repository.MealRepo;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,16 +43,27 @@ public class NutritionServiceImpl implements NutritionService {
         }else{
             return findMeal.get();
         }
-
     }
-
     @Override
-    public List<Meal> searchMealByNameContains(String name) {
+    public MealDTO getMealDTOByName(String name) {
+        Optional<Meal> findMeal = mealRepo.findByName(name);
+        if (findMeal.isEmpty()) {
+            throw new MealDoesNotExistsException(name);
+        } else {
+            return MealMapper.mealToMealDTO().map(findMeal.get(), MealDTO.class);
+        }
+    }
+    @Override
+    public List<MealDTO> searchMealByNameContains(String name) {
         Optional<List<Meal>> findMeals = mealRepo.findByNameContains(name);
+        List<MealDTO> mealDTOS = new ArrayList<>();
         if(findMeals.isEmpty()){
            return List.of();
         }else{
-            return findMeals.get();
+            for (Meal meal: findMeals.get()){
+                mealDTOS.add(MealMapper.mealToMealDTO().map(meal, MealDTO.class));
+            }
+            return mealDTOS;
         }
     }
 

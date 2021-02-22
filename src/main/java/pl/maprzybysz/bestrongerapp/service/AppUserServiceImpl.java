@@ -1,16 +1,17 @@
 package pl.maprzybysz.bestrongerapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.maprzybysz.bestrongerapp.exception.EmailAlreadyExistsException;
 import pl.maprzybysz.bestrongerapp.exception.UserAlreadyExistsException;
 import pl.maprzybysz.bestrongerapp.exception.UserDoesNotExistsException;
-import pl.maprzybysz.bestrongerapp.model.AppUser;
-import pl.maprzybysz.bestrongerapp.model.Role;
-import pl.maprzybysz.bestrongerapp.model.ShoppingListElement;
-import pl.maprzybysz.bestrongerapp.model.VerificationToken;
+import pl.maprzybysz.bestrongerapp.Entity.AppUser;
+import pl.maprzybysz.bestrongerapp.Entity.Role;
+import pl.maprzybysz.bestrongerapp.Entity.ShoppingListElement;
+import pl.maprzybysz.bestrongerapp.Entity.VerificationToken;
 import pl.maprzybysz.bestrongerapp.repository.AppUserRepo;
 import pl.maprzybysz.bestrongerapp.repository.RoleRepo;
 import pl.maprzybysz.bestrongerapp.repository.ShoppingListElementRepo;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Primary
 @Service
 @Transactional
 public class AppUserServiceImpl implements AppUserService {
@@ -122,4 +124,6 @@ public class AppUserServiceImpl implements AppUserService {
             throw new UserDoesNotExistsException(username);
         }
     }
+
+
 }

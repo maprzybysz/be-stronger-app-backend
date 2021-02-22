@@ -35,10 +35,10 @@ public class RestAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
                 .withExpiresAt(new Date(System.currentTimeMillis() +expirationTime))
                 .sign(Algorithm.HMAC256(secret));
 //        response.addHeader("Authorization", "Bearer " + token);
-        String json = "{\"token\":\"" + token + "\",\n";
-        String username = "\"username\":\"" + principal.getUsername() + "\"}";
+        String json = "{\"token\":\"" + token + "\"}";
 
-        response.getWriter().write(json +" "+username);
+
+        response.getWriter().write(json);
         response.setContentType("application/json");
         response.getWriter().flush();
     }
