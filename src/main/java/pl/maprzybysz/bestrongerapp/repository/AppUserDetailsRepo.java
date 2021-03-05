@@ -6,4 +6,5 @@ import pl.maprzybysz.bestrongerapp.Entity.AppUserDetails;
 
 @Repository
 public interface AppUserDetailsRepo extends JpaRepository<AppUserDetails, Long> {
+
 }

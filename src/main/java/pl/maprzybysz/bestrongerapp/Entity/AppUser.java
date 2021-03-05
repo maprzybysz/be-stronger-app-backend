@@ -33,6 +33,8 @@ public class AppUser implements UserDetails {
 	private List<Meal> createMeals;
 	@OneToOne(mappedBy = "appUser")
 	private AppUserDetails userDetails;
+	@OneToMany(mappedBy = "appUser")
+	private List<Article> createArticles;
 
 	public Long getId() {
 		return id;
@@ -134,6 +136,14 @@ public class AppUser implements UserDetails {
 		this.userDetails = userDetails;
 	}
 
+	public List<Article> getCreateArticles() {
+		return createArticles;
+	}
+
+	public void setCreateArticles(List<Article> createArticles) {
+		this.createArticles = createArticles;
+	}
+
 	@Override
 	public boolean isAccountNonExpired() {
 		return true;
@@ -161,6 +171,7 @@ public class AppUser implements UserDetails {
 				", eatenMeals=" + eatenMeals +
 				", createMeals=" + createMeals +
 				", userDetails=" + userDetails +
+				", createArticles=" + createArticles +
 				'}';
 	}
 }

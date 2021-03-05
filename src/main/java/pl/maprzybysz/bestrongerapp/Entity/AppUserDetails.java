@@ -87,9 +87,19 @@ public class AppUserDetails {
     public List<UserTMR> getTmrs() {
         return tmrs;
     }
-
     public void setTmrs(List<UserTMR> tmrs) {
         this.tmrs = tmrs;
+    }
+
+    public UserTMR getLastTMR(){
+        Collections.sort(tmrs, new Comparator<UserTMR>(){
+            @Override
+            public int compare(UserTMR o1, UserTMR o2){
+                return o1.getDateAdded().compareTo(o2.getDateAdded());
+            }
+        });
+        return tmrs.get(tmrs.size()-1);
+
     }
 
     public AppUser getAppUser() {

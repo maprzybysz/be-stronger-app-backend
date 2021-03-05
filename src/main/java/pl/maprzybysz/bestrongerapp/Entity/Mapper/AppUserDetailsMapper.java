@@ -14,6 +14,10 @@ public class AppUserDetailsMapper {
             protected void configure(){
                map().setWeight(source.getLastWeight());
                map().setHeight(source.getHeight());
+               map().setTmr(source.getLastTMR().getTmr());
+               map().setProtein(source.getLastTMR().getProtein());
+               map().setFat(source.getLastTMR().getFat());
+               map().setCarbohydrates(source.getLastTMR().getCarbohydrates());
             }
         });
         return modelMapper; }

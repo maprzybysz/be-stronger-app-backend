@@ -2,18 +2,19 @@ package pl.maprzybysz.bestrongerapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pl.maprzybysz.bestrongerapp.Entity.AppUserDetails;
+import pl.maprzybysz.bestrongerapp.Entity.*;
 import pl.maprzybysz.bestrongerapp.Entity.DTO.AppUserDetailsDTO;
 import pl.maprzybysz.bestrongerapp.Entity.DTO.MealDTO;
 import pl.maprzybysz.bestrongerapp.Entity.Mapper.AppUserDetailsMapper;
 import pl.maprzybysz.bestrongerapp.Entity.Mapper.MealMapper;
-import pl.maprzybysz.bestrongerapp.Entity.Meal;
 import pl.maprzybysz.bestrongerapp.exception.UserDoesNotExistsException;
-import pl.maprzybysz.bestrongerapp.Entity.AppUser;
-import pl.maprzybysz.bestrongerapp.Entity.UserWeight;
 import pl.maprzybysz.bestrongerapp.repository.AppUserRepo;
+import pl.maprzybysz.bestrongerapp.repository.UserTMRRepo;
 import pl.maprzybysz.bestrongerapp.repository.UserWeightRepo;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
@@ -21,19 +22,19 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService{
 
     private AppUserRepo appUserRepo;
     private UserWeightRepo userWeightRepo;
+    private UserTMRRepo userTMRRepo;
 
     @Autowired
-    public AppUserDetailsServiceImpl(AppUserRepo appUserRepo, UserWeightRepo userWeightRepo) {
+    public AppUserDetailsServiceImpl(AppUserRepo appUserRepo, UserWeightRepo userWeightRepo, UserTMRRepo userTMRRepo) {
         this.appUserRepo = appUserRepo;
         this.userWeightRepo = userWeightRepo;
+        this.userTMRRepo = userTMRRepo;
     }
 
     @Override
     public AppUserDetailsDTO getUserDetails(String username) {
         Optional<AppUser> findUser = appUserRepo.findByUsername(username);
         if(findUser.isPresent()){
-            System.out.println(AppUserDetailsMapper.detailsToDetailsDTO().map(findUser.get().getUserDetails(),
-                    AppUserDetailsDTO.class));
             return AppUserDetailsMapper.detailsToDetailsDTO().map(findUser.get().getUserDetails(),
                     AppUserDetailsDTO.class);
         }else{
@@ -84,4 +85,167 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService{
             throw new UserDoesNotExistsException(username);
         }
     }
+
+    @Override
+    public void updateUserActivity(String username, String userActivity) {
+        Optional<AppUser> findUser = appUserRepo.findByUsername(username);
+        if(findUser.isPresent()){
+            UserActivity activity = UserActivity.valueOf(userActivity);
+            findUser.get().getUserDetails().setUserActivity(activity);
+            appUserRepo.save(findUser.get());
+        }else{
+            throw new UserDoesNotExistsException(username);
+        }
+    }
+
+    @Override
+    public void updateUserHeight(String username, double userHeight) {
+        Optional<AppUser> findUser = appUserRepo.findByUsername(username);
+        if(findUser.isPresent()){
+            findUser.get().getUserDetails().setHeight(userHeight);
+            appUserRepo.save(findUser.get());
+        }else{
+            throw new UserDoesNotExistsException(username);
+        }
+    }
+    @Override
+    public void updateUserGoal(String username, String userGoal) {
+        Optional<AppUser> findUser = appUserRepo.findByUsername(username);
+        if(findUser.isPresent()){
+            UserGoal goal = UserGoal.valueOf(userGoal);
+            findUser.get().getUserDetails().setUserGoal(goal);
+            appUserRepo.save(findUser.get());
+        }else{
+            throw new UserDoesNotExistsException(username);
+        }
+    }
+
+    @Override
+    public void addTMRbyUsername(String username) {
+        Optional<AppUser> findUser = appUserRepo.findByUsername(username);
+        if(findUser.isPresent()){
+            AppUserDetails details = findUser.get().getUserDetails();
+            long userAge = ChronoUnit.YEARS.between(details.getBirthday(), LocalDate.now());
+            double BMR = calculateBMR(details.getLastWeight(), details.getHeight(), userAge);
+            double TMR = calculateTMR(BMR, details.getUserActivity(), details.getUserGoal());
+            double protein = calculateProtein(details.getLastWeight());
+            double fat = calculateFat(TMR);
+            double carbohydrates = calculateCarbohydrates(TMR, protein, fat);
+            UserTMR userTMR = new UserTMR();
+            userTMR.setTmr(TMR);
+            userTMR.setProtein(protein);
+            userTMR.setFat(fat);
+            userTMR.setCarbohydrates(carbohydrates);
+            userTMR.setDateAdded(LocalDate.now());
+            userTMR.setAppUserDetails(details);
+            userTMRRepo.save(userTMR);
+        }else{
+            throw new UserDoesNotExistsException(username);
+        }
+    }
+    @Override
+    public void addTMRbyUser(AppUser appUser) {
+        AppUserDetails details = appUser.getUserDetails();
+        long userAge = ChronoUnit.YEARS.between(details.getBirthday(), LocalDate.now());
+        double BMR = calculateBMR(details.getLastWeight(), details.getHeight(), userAge);
+        double TMR = calculateTMR(BMR, details.getUserActivity(), details.getUserGoal());
+        double protein = calculateProtein(details.getLastWeight());
+        double fat = calculateFat(TMR);
+        double carbohydrates = calculateCarbohydrates(TMR, protein, fat);
+        UserTMR userTMR = new UserTMR();
+        userTMR.setTmr(TMR);
+        userTMR.setProtein(protein);
+        userTMR.setFat(fat);
+        userTMR.setCarbohydrates(carbohydrates);
+        userTMR.setDateAdded(LocalDate.now());
+        userTMR.setAppUserDetails(details);
+        userTMRRepo.save(userTMR);
+    }
+
+    @Override
+    public List<UserTMR> getUserTMRs(String username) {
+        Optional<AppUser> findUser = appUserRepo.findByUsername(username);
+        if(findUser.isPresent()){
+           return findUser.get().getUserDetails().getTmrs();
+        }else{
+            throw new UserDoesNotExistsException(username);
+        }
+    }
+
+    @Override
+    public UserTMR getUserTMR(String date, String username) {
+        Optional<AppUser> findUser = appUserRepo.findByUsername(username);
+        LocalDate createDate = LocalDate.parse(date);
+        List<UserTMR> tmrs;
+        if(findUser.isPresent()){
+            tmrs = userTMRRepo.findUserTMRByDateAddedIsLessThanEqualAndAppUserDetailsId(createDate,
+                    findUser.get().getUserDetails().getId());
+            if(tmrs.size()>0){
+                Collections.sort(tmrs, new Comparator<UserTMR>(){
+                    @Override
+                    public int compare(UserTMR o1, UserTMR o2){
+                        return o1.getDateAdded().compareTo(o2.getDateAdded());
+                    }
+                });
+                return tmrs.get(tmrs.size()-1);
+            }else {
+                tmrs = userTMRRepo.findUserTMRByDateAddedIsGreaterThanAndAppUserDetailsId(createDate,
+                        findUser.get().getUserDetails().getId());
+                Collections.sort(tmrs, new Comparator<UserTMR>(){
+                    @Override
+                    public int compare(UserTMR o1, UserTMR o2){
+                        return o1.getDateAdded().compareTo(o2.getDateAdded());
+                    }
+                });
+                return tmrs.get(0);
+            }
+
+        }else{
+            throw new UserDoesNotExistsException(username);
+        }
+    }
+
+    private double calculateBMR(double weight, double height, long userAge){
+        return (66 + (13.7*weight) + (5*height) - (6.76*userAge));
+    }
+    private double calculateTMR(double BMR, UserActivity userActivity, UserGoal userGoal){
+        double TMR = 0;
+        switch(userActivity){
+            case ZNIKOMA:
+                TMR = BMR*1.25;
+                break;
+            case MAŁA:
+                TMR = BMR*1.45;
+                break;
+            case UMIARKOWANA:
+                TMR = BMR*1.65;
+                break;
+            case DUŻA:
+                TMR = BMR*1.85;
+                break;
+        }
+        switch (userGoal){
+            case REDUKCJA:
+                TMR = TMR-300;
+                break;
+            case UTRZYMANIE:
+                break;
+            case MASA:
+                TMR = TMR+300;
+                break;
+        }
+        return Math.round(TMR * 100.0) / 100.0;
+    }
+    private double calculateProtein(double weight){
+        return Math.round((weight*1.9) * 100.0) / 100.0;
+    }
+    private double calculateFat(double TMR){
+        return Math.round((((TMR*0.25)/9)*1.9) * 100.0) / 100.0;
+    }
+    private double calculateCarbohydrates(double TMR, double protein, double fat){
+        double proteinKcal = protein*4;
+        double fatKcal = fat*9;
+       return Math.round((((TMR-proteinKcal-fatKcal)/4) * 100.0) / 100.0);
+    }
+
 }

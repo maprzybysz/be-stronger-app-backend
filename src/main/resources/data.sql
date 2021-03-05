@@ -67,3 +67,53 @@ insert into user_weight(id, date_added, weight, app_user_details_id) VALUES (6, 
 insert into user_weight(id, date_added, weight, app_user_details_id) VALUES (7, '2020-02-20', 84, 1);
 insert into user_weight(id, date_added, weight, app_user_details_id) VALUES (8, '2021-02-21', 96, 1);
 insert into user_weight(id, date_added, weight, app_user_details_id) VALUES (9, '2021-02-22', 72, 1);
+INSERT INTO user_tmr (id, carbohydrates, date_added, fat, protein, tmr, app_user_details_id)
+VALUES (1, 153, '2021-01-01', 116.68, 136.8, 2210.85, 1);
+INSERT INTO user_tmr (id, carbohydrates, date_added, fat, protein, tmr, app_user_details_id)
+VALUES (2, 332, '2021-01-24', 188.53, 136.8, 3572.06, 1);
+INSERT INTO user_tmr (id, carbohydrates, date_added, fat, protein, tmr, app_user_details_id)
+VALUES (3, 207, '2021-02-15', 138.19, 136.8, 2618.32, 1);
+INSERT INTO article (id, category, content, create_date, img_url, title, app_user_id)
+VALUES (1, 'Bieganie', 'Praesent vel nunc nisl. Cras sed dictum lorem. Curabitur a nisi vitae mauris auctor semper.
+Praesent metus erat, tempor tincidunt volutpat sed, pulvinar sed turpis. Ut cursus tortor non neque gravida, et feugiat
+diam vehicula. Duis commodo consequat eros quis mattis. Vivamus nec eros convallis, viverra enim eu, tincidunt ex.
+Aenean nisi nulla, interdum sit amet libero ac, elementum lacinia est. Quisque ac congue justo. Nulla pellentesque
+interdum nisl nec ullamcorper. ', '2020-05-20', 'https://tricentre.pl/data/include/img/news/1585129978.jpg','Rozwój ducha', 1);
+INSERT INTO article (id, category, content, create_date, img_url, title, app_user_id)
+VALUES (2, 'Bieganie', 'Praesent vel nunc nisl. Cras sed dictum lorem. Curabitur a nisi vitae mauris auctor semper.
+Praesent metus erat, tempor tincidunt volutpat sed, pulvinar sed turpis. Ut cursus tortor non neque gravida, et feugiat
+diam vehicula. Duis commodo consequat eros quis mattis. Vivamus nec eros convallis, viverra enim eu, tincidunt ex.
+Aenean nisi nulla, interdum sit amet libero ac, elementum lacinia est. Quisque ac congue justo. Nulla pellentesque
+interdum nisl nec ullamcorper. ', '2020-05-20', 'https://tricentre.pl/data/include/img/news/1585129978.jpg','Rozwoj
+sily', 1);
+INSERT INTO article (id, category, content, create_date, img_url, title, app_user_id)
+VALUES (3, 'Bieganie', 'Praesent vel nunc nisl. Cras sed dictum lorem. Curabitur a nisi vitae mauris auctor semper.
+Praesent metus erat, tempor tincidunt volutpat sed, pulvinar sed turpis. Ut cursus tortor non neque gravida, et feugiat
+diam vehicula. Duis commodo consequat eros quis mattis. Vivamus nec eros convallis, viverra enim eu, tincidunt ex.
+Aenean nisi nulla, interdum sit amet libero ac, elementum lacinia est. Quisque ac congue justo. Nulla pellentesque
+interdum nisl nec ullamcorper. ', '2020-05-20', 'https://tricentre.pl/data/include/img/news/1585129978.jpg','Rozwoj
+sily 2', 1);
+INSERT INTO article (id, category, content, create_date, img_url, title, app_user_id)
+VALUES (4, 'Bieganie', 'Praesent vel nunc nisl. Cras sed dictum lorem. Curabitur a nisi vitae mauris auctor semper.
+Praesent metus erat, tempor tincidunt volutpat sed, pulvinar sed turpis. Ut cursus tortor non neque gravida, et feugiat
+diam vehicula. Duis commodo consequat eros quis mattis. Vivamus nec eros convallis, viverra enim eu, tincidunt ex.
+Aenean nisi nulla, interdum sit amet libero ac, elementum lacinia est. Quisque ac congue justo. Nulla pellentesque
+interdum nisl nec ullamcorper. ', '2020-05-20', 'https://tricentre.pl/data/include/img/news/1585129978.jpg','Rozwoj
+sily 2', 1);
+INSERT INTO article (id, category, content, create_date, img_url, title, app_user_id)
+VALUES (5, 'Bieganie', 'Praesent vel nunc nisl. Cras sed dictum lorem. Curabitur a nisi vitae mauris auctor semper.
+Praesent metus erat, tempor tincidunt volutpat sed, pulvinar sed turpis. Ut cursus tortor non neque gravida, et feugiat
+diam vehicula. Duis commodo consequat eros quis mattis. Vivamus nec eros convallis, viverra enim eu, tincidunt ex.
+Aenean nisi nulla, interdum sit amet libero ac, elementum lacinia est. Quisque ac congue justo. Nulla pellentesque
+interdum nisl nec ullamcorper. ', '2020-05-20', 'https://tricentre.pl/data/include/img/news/1585129978.jpg','Rozwoj
+sily 2', 1);
+INSERT INTO exercise (id, description, exercise_category, img_url, media_url, name)
+VALUES (1, 'opis', 'BARKI', null, null, 'OHP');
+INSERT INTO exercise (id, description, exercise_category, img_url, media_url, name)
+VALUES (2, 'opis', 'PLECY', null, null, 'Wiosłowanie');
+INSERT INTO exercise (id, description, exercise_category, img_url, media_url, name)
+VALUES (3, 'opis', 'PLECY', null, null, 'Podciąganie');
+INSERT INTO exercise (id, description, exercise_category, img_url, media_url, name)
+VALUES (4, 'opis', 'KLATKA_PIERSIOWA', null, null, 'Wyciskanie na ławce');
+INSERT INTO exercise (id, description, exercise_category, img_url, media_url, name)
+VALUES (5, 'opis', 'KLATKA_PIERSIOWA', null, null, 'Wyciskanie hantli');
