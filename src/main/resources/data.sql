@@ -117,3 +117,5 @@ INSERT INTO exercise (id, description, exercise_category, img_url, media_url, na
 VALUES (4, 'opis', 'KLATKA_PIERSIOWA', null, null, 'Wyciskanie na ławce');
 INSERT INTO exercise (id, description, exercise_category, img_url, media_url, name)
 VALUES (5, 'opis', 'KLATKA_PIERSIOWA', null, null, 'Wyciskanie hantli');
+INSERT INTO exercise (id, description, exercise_category, img_url, media_url, name)
+VALUES (6, 'opis', 'BRZUCH', null, null, 'Allahy');

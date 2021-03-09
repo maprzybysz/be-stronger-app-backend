@@ -35,6 +35,8 @@ public class AppUser implements UserDetails {
 	private AppUserDetails userDetails;
 	@OneToMany(mappedBy = "appUser")
 	private List<Article> createArticles;
+	@OneToMany(mappedBy = "appUser")
+	private List<Training> trainings;
 
 	public Long getId() {
 		return id;
@@ -142,6 +144,14 @@ public class AppUser implements UserDetails {
 
 	public void setCreateArticles(List<Article> createArticles) {
 		this.createArticles = createArticles;
+	}
+
+	public List<Training> getTrainings() {
+		return trainings;
+	}
+
+	public void setTrainings(List<Training> trainings) {
+		this.trainings = trainings;
 	}
 
 	@Override

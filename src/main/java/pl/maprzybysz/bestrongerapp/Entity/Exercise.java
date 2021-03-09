@@ -14,6 +14,7 @@ public class Exercise {
     @Enumerated(EnumType.STRING)
     private ExerciseCategory exerciseCategory;
 
+
     public Long getId() {
         return id;
     }

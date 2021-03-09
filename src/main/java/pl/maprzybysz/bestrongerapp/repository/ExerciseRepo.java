@@ -10,5 +10,7 @@ import java.util.Optional;
 @Repository
 public interface ExerciseRepo extends JpaRepository<Exercise, Long > {
 
-    Optional<List<Exercise>> findAllByNameContains(String name);
+    Optional<List<Exercise>> findByNameContainsOrderByNameAsc(String name);
+    Optional<List<Exercise>> findAllByOrderByNameAsc();
+
 }
