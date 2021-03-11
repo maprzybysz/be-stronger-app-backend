@@ -20,6 +20,12 @@ public class UserWeight {
     public UserWeight() {
     }
 
+    public UserWeight(double weight, LocalDate dateAdded, AppUserDetails appUserDetails) {
+        this.weight = weight;
+        this.dateAdded = dateAdded;
+        this.appUserDetails = appUserDetails;
+    }
+
     public Long getId() {
         return id;
     }
@@ -58,7 +64,6 @@ public class UserWeight {
                 "id=" + id +
                 ", weight=" + weight +
                 ", dateAdded=" + dateAdded +
-                ", appUserDetails=" + appUserDetails +
                 '}';
     }
 

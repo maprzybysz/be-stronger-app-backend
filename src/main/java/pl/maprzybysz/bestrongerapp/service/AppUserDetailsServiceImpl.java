@@ -126,7 +126,7 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService{
         if(findUser.isPresent()){
             AppUserDetails details = findUser.get().getUserDetails();
             long userAge = ChronoUnit.YEARS.between(details.getBirthday(), LocalDate.now());
-            double BMR = calculateBMR(details.getLastWeight(), details.getHeight(), userAge);
+            double BMR = calculateBMR(details.getLastWeight(), details.getHeight(), userAge, details.getSex());
             double TMR = calculateTMR(BMR, details.getUserActivity(), details.getUserGoal());
             double protein = calculateProtein(details.getLastWeight());
             double fat = calculateFat(TMR);
@@ -147,7 +147,7 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService{
     public void addTMRbyUser(AppUser appUser) {
         AppUserDetails details = appUser.getUserDetails();
         long userAge = ChronoUnit.YEARS.between(details.getBirthday(), LocalDate.now());
-        double BMR = calculateBMR(details.getLastWeight(), details.getHeight(), userAge);
+        double BMR = calculateBMR(details.getLastWeight(), details.getHeight(), userAge, details.getSex());
         double TMR = calculateTMR(BMR, details.getUserActivity(), details.getUserGoal());
         double protein = calculateProtein(details.getLastWeight());
         double fat = calculateFat(TMR);
@@ -205,8 +205,13 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService{
         }
     }
 
-    private double calculateBMR(double weight, double height, long userAge){
-        return (66 + (13.7*weight) + (5*height) - (6.76*userAge));
+    private double calculateBMR(double weight, double height, long userAge, String sex){
+        if(sex.equals("Mężczyzna")){
+            return (66 + (13.7*weight) + (5*height) - (6.76*userAge));
+        }else{
+            return (655 + (9.6*weight) + (1.8*height) - (4.7*userAge));
+        }
+
     }
     private double calculateTMR(double BMR, UserActivity userActivity, UserGoal userGoal){
         double TMR = 0;

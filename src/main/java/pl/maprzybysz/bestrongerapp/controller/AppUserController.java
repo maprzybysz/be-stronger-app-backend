@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.maprzybysz.bestrongerapp.Entity.DTO.PasswordRecoveryDTO;
+import pl.maprzybysz.bestrongerapp.Entity.DTO.SignUpDTO;
 import pl.maprzybysz.bestrongerapp.exception.EmailAlreadyExistsException;
 import pl.maprzybysz.bestrongerapp.exception.UserAlreadyExistsException;
 import pl.maprzybysz.bestrongerapp.Entity.AppUser;
@@ -26,13 +28,15 @@ public class AppUserController {
 
 
     @PostMapping("/sign-up")
-    public ResponseEntity<?> saveUser(@RequestBody AppUser appUser, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<?> saveUser(@RequestBody SignUpDTO signUpDTO, HttpServletRequest httpServletRequest) {
         try{
-            appUserService.addNewUser(appUser, httpServletRequest);
+            System.out.println(signUpDTO);
+            appUserService.addNewUser(signUpDTO, httpServletRequest);
             return  ResponseEntity.status(HttpStatus.CREATED).build();
         }catch (UserAlreadyExistsException | EmailAlreadyExistsException e){
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
@@ -41,6 +45,16 @@ public class AppUserController {
     public void verifyUser(@PathVariable String token, HttpServletResponse response) throws IOException {
         appUserService.verifyToken(token);
         appUserService.removeToken(token);
+        response.sendRedirect("http://localhost:3000/login");
+    }
+    @GetMapping("/send-recovery/{username}")
+    public void getRecoveryToken(@PathVariable String username) throws IOException {
+        appUserService.sendRecoveryToken(username);
+
+    }
+    @PostMapping("/restart-password")
+    public void restartPassword(@RequestBody PasswordRecoveryDTO passwordRecoveryDTO, HttpServletResponse response) throws IOException {
+        appUserService.restartPassword(passwordRecoveryDTO.getToken(), passwordRecoveryDTO.getPassword(), passwordRecoveryDTO.getConfirmPassword());
         response.sendRedirect("http://localhost:3000/login");
     }
 

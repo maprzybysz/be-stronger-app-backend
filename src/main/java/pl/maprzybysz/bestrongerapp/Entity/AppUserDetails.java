@@ -11,14 +11,15 @@ public class AppUserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String sex;
     private LocalDate birthday;
     @Enumerated(EnumType.STRING)
     private UserActivity userActivity;
     @Enumerated(EnumType.STRING)
     private UserGoal userGoal;
     private double height;
-    @OneToMany(mappedBy = "appUserDetails")
-    private List<UserWeight> weights;
+    @OneToMany(mappedBy = "appUserDetails", cascade = CascadeType.ALL)
+    private List<UserWeight> weights = new ArrayList<>();
     @OneToMany(mappedBy = "appUserDetails")
     private List<UserTMR> tmrs;
     @OneToOne
@@ -31,6 +32,14 @@ public class AppUserDetails {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
     }
 
     public LocalDate getBirthday() {

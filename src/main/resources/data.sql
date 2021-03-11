@@ -4,8 +4,8 @@ insert into app_user(id, email, is_enabled, password, rules_accepted, username)
 VALUES (1, "notentego678@gmail.com", true,"$2a$10$JAu1KH2QCPGZqhyA0JUF0uurkrXOneGATPCvH9oikxKHFF6u7zrgC", true, "mefiu678");
 insert into app_user(id, email, is_enabled, password, rules_accepted, username)
 VALUES (2, "testuser@gmail.com", true,"$2a$10$JAu1KH2QCPGZqhyA0JUF0uurkrXOneGATPCvH9oikxKHFF6u7zrgC", true,"testuser");
-insert into app_user_details(id, birthday, user_activity, height, user_goal, app_user_id)
-VALUES (1, '1998-08-20', 'ZNIKOMA', 173, 'UTRZYMANIE', 1 );
+insert into app_user_details(id, sex, birthday, user_activity, height, user_goal, app_user_id)
+VALUES (1,'Mężczyzna' , '1998-08-20', 'ZNIKOMA', 173, 'UTRZYMANIE', 1 );
 insert into app_user_roles(app_user_id, roles_id) VALUES (1, 1);
 insert into app_user_roles(app_user_id, roles_id) VALUES (1, 1);
 insert into meal_details(id, description, img_url, create_date) VALUES (1, 'opis 1', 'url', '2021-02-21');

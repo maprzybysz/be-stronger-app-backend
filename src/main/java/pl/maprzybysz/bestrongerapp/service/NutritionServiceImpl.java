@@ -10,6 +10,7 @@ import pl.maprzybysz.bestrongerapp.Entity.*;
 import pl.maprzybysz.bestrongerapp.repository.AppUserRepo;
 import pl.maprzybysz.bestrongerapp.repository.EatenMealRepo;
 import pl.maprzybysz.bestrongerapp.repository.MealRepo;
+import pl.maprzybysz.bestrongerapp.repository.ShoppingListElementRepo;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,12 +23,15 @@ public class NutritionServiceImpl implements NutritionService {
     private MealRepo mealRepo;
     private AppUserRepo appUserRepo;
     private EatenMealRepo eatenMealRepo;
+    private ShoppingListElementRepo shoppingListElementRepo;
 
     @Autowired
-    public NutritionServiceImpl(MealRepo mealRepo, AppUserRepo appUserRepo, EatenMealRepo eatenMealRepo) {
+    public NutritionServiceImpl(MealRepo mealRepo, AppUserRepo appUserRepo, EatenMealRepo eatenMealRepo,
+                                ShoppingListElementRepo shoppingListElementRepo) {
         this.mealRepo = mealRepo;
         this.appUserRepo = appUserRepo;
         this.eatenMealRepo = eatenMealRepo;
+        this.shoppingListElementRepo = shoppingListElementRepo;
     }
 
     @Override
@@ -130,6 +134,32 @@ public class NutritionServiceImpl implements NutritionService {
     public void deleteMealById(Long id){
         eatenMealRepo.deleteById(id);
     }
+    @Override
+    public List<ShoppingListElement> getShoppingList(String username) {
+        Optional<AppUser> appUser = appUserRepo.findByUsername(username);
+        if(appUser.isPresent()){
+            return appUser.get().getShoppingList();
+        }else{
+            return List.of(null);
+        }
+    }
 
+    @Override
+    public void deleteShoppingListElement(Long id) {
+        shoppingListElementRepo.deleteById(id);
+    }
+
+    @Override
+    public void addShoppingListElement(String username, String listItem) {
+        Optional<AppUser> user = appUserRepo.findByUsername(username);
+        if(user.isPresent()){
+            ShoppingListElement shoppingListElement = new ShoppingListElement();
+            shoppingListElement.setListElement(listItem);
+            shoppingListElement.setAppUser(user.get());
+            shoppingListElementRepo.save(shoppingListElement);
+        }else{
+            throw new UserDoesNotExistsException(username);
+        }
+    }
 
 }

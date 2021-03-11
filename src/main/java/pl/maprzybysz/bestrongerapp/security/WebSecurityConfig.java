@@ -57,6 +57,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         authorizeRequests()
                 .antMatchers(HttpMethod.POST,"/login").permitAll()
                 .antMatchers(HttpMethod.POST,"/sign-up").permitAll()
+                .antMatchers(HttpMethod.GET,"/send-recovery/*").permitAll()
+                .antMatchers(HttpMethod.POST,"/restart-password").permitAll()
                 .antMatchers("/verify-token/*").permitAll()
                 .anyRequest().authenticated()
                 .and()

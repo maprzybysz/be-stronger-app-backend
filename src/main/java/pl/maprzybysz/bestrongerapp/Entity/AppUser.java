@@ -31,7 +31,7 @@ public class AppUser implements UserDetails {
 	private List<EatenMeal> eatenMeals;
 	@OneToMany(mappedBy = "appUser")
 	private List<Meal> createMeals;
-	@OneToOne(mappedBy = "appUser")
+	@OneToOne(mappedBy = "appUser", cascade = CascadeType.ALL)
 	private AppUserDetails userDetails;
 	@OneToMany(mappedBy = "appUser")
 	private List<Article> createArticles;
