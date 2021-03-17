@@ -15,5 +15,7 @@ public interface AppUserService{
     public void removeToken(String token);
     public void restartPassword(String token, String password, String confirmPassword);
     public void removeRecoveryToken(String token);
-
+    public void sendDeleteToken(String username,  HttpServletRequest request);
+    public void deleteAccount(String token);
+    public void removeDeleteToken(String token);
 }

@@ -1,15 +1,14 @@
 package pl.maprzybysz.bestrongerapp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.maprzybysz.bestrongerapp.Entity.*;
 import pl.maprzybysz.bestrongerapp.Entity.DTO.SignUpDTO;
-import pl.maprzybysz.bestrongerapp.exception.EmailAlreadyExistsException;
-import pl.maprzybysz.bestrongerapp.exception.UserAlreadyExistsException;
-import pl.maprzybysz.bestrongerapp.exception.UserDoesNotExistsException;
+import pl.maprzybysz.bestrongerapp.exception.*;
 import pl.maprzybysz.bestrongerapp.repository.*;
 
 import javax.mail.MessagingException;
@@ -32,13 +31,16 @@ public class AppUserServiceImpl implements AppUserService {
     private VerificationTokenRepo verificationTokenRepo;
     private RecoveryTokenRepo recoveryTokenRepo;
     private AppUserDetailsService appUserDetailsService;
-
+    private DeleteTokenRepo deleteTokenRepo;
+    @Value("${frontend.url}")
+    private String serverUrl;
 
 
     @Autowired
     public AppUserServiceImpl(AppUserRepo appUserRepo, RoleRepo roleRepo, PasswordEncoder passwordEncoder,
                               MailSenderService mailSenderService, VerificationTokenRepo verificationTokenRepo,
-                              RecoveryTokenRepo recoveryTokenRepo, AppUserDetailsService appUserDetailsService) {
+                              RecoveryTokenRepo recoveryTokenRepo, AppUserDetailsService appUserDetailsService,
+                              DeleteTokenRepo deleteTokenRepo) {
         this.appUserRepo = appUserRepo;
         this.roleRepo = roleRepo;
         this.passwordEncoder = passwordEncoder;
@@ -46,6 +48,7 @@ public class AppUserServiceImpl implements AppUserService {
         this.verificationTokenRepo = verificationTokenRepo;
         this.recoveryTokenRepo = recoveryTokenRepo;
         this.appUserDetailsService = appUserDetailsService;
+        this.deleteTokenRepo = deleteTokenRepo;
 
     }
 
@@ -87,7 +90,7 @@ public class AppUserServiceImpl implements AppUserService {
             //Create weightList
             UserWeight userWeight = new UserWeight(signUpDTO.getWeight(), LocalDate.now(), appUserDetails);
             appUserDetails.getWeights().add(userWeight);
-            appUserDetailsService.addTMRbyUser(appUser);
+            appUserDetailsService.addTMRbyUser(appUser, null);
             String url = "http://" + request.getServerName() + ":" + request.getServerPort()+request.getContextPath()+
                     "/verify-token/"+token;
             try {
@@ -99,9 +102,6 @@ public class AppUserServiceImpl implements AppUserService {
 
 
     }
-
-
-
     @Override
     public void verifyToken(String token) {
         AppUser appUser = verificationTokenRepo.findByValue(token).getAppUser();
@@ -110,24 +110,71 @@ public class AppUserServiceImpl implements AppUserService {
     }
     @Override
     public void sendRecoveryToken(String username) {
-        AppUser appUser = appUserRepo.findByUsername(username).get();
-        String token = UUID.randomUUID().toString();
-        RecoveryToken recoveryToken = new RecoveryToken(token, appUser);
-        recoveryTokenRepo.save(recoveryToken);
-        String url = "http://localhost:3000/recoverypassword/"+token;
-        try {
-            mailSenderService.sendMail(appUser.getEmail(), "Restart hasła", url, false);
-        } catch (MessagingException e) {
-            e.printStackTrace();
+        Optional<AppUser> appUser = appUserRepo.findByUsername(username);
+        if(appUser.isEmpty()){
+            throw new UserDoesNotExistsException();
+        }else{
+            String token = UUID.randomUUID().toString();
+            RecoveryToken recoveryToken = new RecoveryToken(token, appUser.get());
+            recoveryTokenRepo.save(recoveryToken);
+            String url = serverUrl+"/recoverypassword/"+token;
+            try {
+                mailSenderService.sendMail(appUser.get().getEmail(), "Restart hasła", url, false);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    @Override
+    public void sendDeleteToken(String username,  HttpServletRequest request) {
+        Optional<AppUser> appUser = appUserRepo.findByUsername(username);
+        if(appUser.isEmpty()){
+            throw new UserDoesNotExistsException();
+        }else{
+            String token = UUID.randomUUID().toString();
+            DeleteToken deleteToken = new DeleteToken(token, appUser.get());
+            deleteTokenRepo.save(deleteToken);
+            String url = "http://" + request.getServerName() + ":" + request.getServerPort()+request.getContextPath()+
+                    "/delete-account/"+token;
+            try {
+                mailSenderService.sendMail(appUser.get().getEmail(), "Potwierdź usunięcie konta", url, false);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void deleteAccount(String token) {
+        Optional<DeleteToken> deleteToken = deleteTokenRepo.findByValue(token);
+        if(deleteToken.isEmpty()){
+            throw new InvalidTokenException();
+        }else{
+            AppUser appUser = deleteToken.get().getAppUser();
+            if(appUser == null){
+                throw new UserDoesNotExistsException();
+            }else{
+                deleteTokenRepo.deleteByValue(token);
+                appUserRepo.delete(appUser);
+            }
         }
     }
 
     @Override
     public void restartPassword(String token, String password, String confirmPassword) {
-        AppUser appUser = recoveryTokenRepo.findByValue(token).getAppUser();
-        if(password.equals(confirmPassword)){
-            appUser.setPassword(passwordEncoder.encode(password));
-            removeRecoveryToken(token);
+        Optional<RecoveryToken> recoveryToken = recoveryTokenRepo.findByValue(token);
+        if(recoveryToken.isEmpty()){
+            throw new InvalidTokenException();
+        }else{
+            AppUser appUser = recoveryToken.get().getAppUser();
+            if(passwordEncoder.matches(password, appUser.getPassword())){
+                throw new PasswordAlreadyUsedException();
+            }else if(!password.equals(confirmPassword)){
+                throw new PasswordMismatchException();
+            }else{
+                appUser.setPassword(passwordEncoder.encode(password));
+                removeRecoveryToken(token);
+            }
         }
     }
 
@@ -141,6 +188,10 @@ public class AppUserServiceImpl implements AppUserService {
         recoveryTokenRepo.deleteByValue(token);
     }
 
+    @Override
+    public void removeDeleteToken(String token) {
+        deleteTokenRepo.deleteByValue(token);
+    }
 
 
 

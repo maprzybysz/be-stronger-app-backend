@@ -20,7 +20,7 @@ public class AppUserDetails {
     private double height;
     @OneToMany(mappedBy = "appUserDetails", cascade = CascadeType.ALL)
     private List<UserWeight> weights = new ArrayList<>();
-    @OneToMany(mappedBy = "appUserDetails")
+    @OneToMany(mappedBy = "appUserDetails", cascade = CascadeType.ALL)
     private List<UserTMR> tmrs;
     @OneToOne
     @JoinColumn(name="app_user_id")

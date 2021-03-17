@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface NutritionService {
-    public void addMeal(Meal meal);
+    public void addMeal(MealDTO meal);
     public Meal getMealByName(String name);
     public MealDTO getMealDTOByName(String name);
     public List<MealDTO> searchMealByNameContains(String name);

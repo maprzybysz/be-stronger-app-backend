@@ -38,7 +38,7 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService{
             return AppUserDetailsMapper.detailsToDetailsDTO().map(findUser.get().getUserDetails(),
                     AppUserDetailsDTO.class);
         }else{
-            throw new UserDoesNotExistsException(username);
+            throw new UserDoesNotExistsException();
         }
     }
 
@@ -55,7 +55,7 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService{
             });
             return weights;
         }else{
-            throw new UserDoesNotExistsException(username);
+            throw new UserDoesNotExistsException();
         }
     }
     @Override
@@ -71,7 +71,7 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService{
             });
             return weights.get(weights.size()-1).getWeight();
         }else{
-            throw new UserDoesNotExistsException(username);
+            throw new UserDoesNotExistsException();
         }
     }
 
@@ -81,8 +81,9 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService{
         if(findUser.isPresent()){
             userWeight.setAppUserDetails(findUser.get().getUserDetails());
             userWeightRepo.save(userWeight);
+            addTMRbyUsername(username, userWeight.getDateAdded());
         }else{
-            throw new UserDoesNotExistsException(username);
+            throw new UserDoesNotExistsException();
         }
     }
 
@@ -93,8 +94,9 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService{
             UserActivity activity = UserActivity.valueOf(userActivity);
             findUser.get().getUserDetails().setUserActivity(activity);
             appUserRepo.save(findUser.get());
+            addTMRbyUsername(username, null);
         }else{
-            throw new UserDoesNotExistsException(username);
+            throw new UserDoesNotExistsException();
         }
     }
 
@@ -104,8 +106,9 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService{
         if(findUser.isPresent()){
             findUser.get().getUserDetails().setHeight(userHeight);
             appUserRepo.save(findUser.get());
+            addTMRbyUsername(username, null);
         }else{
-            throw new UserDoesNotExistsException(username);
+            throw new UserDoesNotExistsException();
         }
     }
     @Override
@@ -115,17 +118,18 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService{
             UserGoal goal = UserGoal.valueOf(userGoal);
             findUser.get().getUserDetails().setUserGoal(goal);
             appUserRepo.save(findUser.get());
+            addTMRbyUsername(username, null);
         }else{
-            throw new UserDoesNotExistsException(username);
+            throw new UserDoesNotExistsException();
         }
     }
 
     @Override
-    public void addTMRbyUsername(String username) {
+    public void addTMRbyUsername(String username, LocalDate date) {
         Optional<AppUser> findUser = appUserRepo.findByUsername(username);
         if(findUser.isPresent()){
             AppUserDetails details = findUser.get().getUserDetails();
-            long userAge = ChronoUnit.YEARS.between(details.getBirthday(), LocalDate.now());
+            long userAge = calculateAge(details.getBirthday());
             double BMR = calculateBMR(details.getLastWeight(), details.getHeight(), userAge, details.getSex());
             double TMR = calculateTMR(BMR, details.getUserActivity(), details.getUserGoal());
             double protein = calculateProtein(details.getLastWeight());
@@ -136,17 +140,21 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService{
             userTMR.setProtein(protein);
             userTMR.setFat(fat);
             userTMR.setCarbohydrates(carbohydrates);
-            userTMR.setDateAdded(LocalDate.now());
+            if(date==null){
+                userTMR.setDateAdded(LocalDate.now());
+            }else {
+                userTMR.setDateAdded(date);
+            }
             userTMR.setAppUserDetails(details);
             userTMRRepo.save(userTMR);
         }else{
-            throw new UserDoesNotExistsException(username);
+            throw new UserDoesNotExistsException();
         }
     }
     @Override
-    public void addTMRbyUser(AppUser appUser) {
+    public void addTMRbyUser(AppUser appUser, LocalDate date) {
         AppUserDetails details = appUser.getUserDetails();
-        long userAge = ChronoUnit.YEARS.between(details.getBirthday(), LocalDate.now());
+        long userAge = calculateAge(details.getBirthday());
         double BMR = calculateBMR(details.getLastWeight(), details.getHeight(), userAge, details.getSex());
         double TMR = calculateTMR(BMR, details.getUserActivity(), details.getUserGoal());
         double protein = calculateProtein(details.getLastWeight());
@@ -157,7 +165,11 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService{
         userTMR.setProtein(protein);
         userTMR.setFat(fat);
         userTMR.setCarbohydrates(carbohydrates);
-        userTMR.setDateAdded(LocalDate.now());
+        if(date==null){
+            userTMR.setDateAdded(LocalDate.now());
+        }else {
+            userTMR.setDateAdded(date);
+        }
         userTMR.setAppUserDetails(details);
         userTMRRepo.save(userTMR);
     }
@@ -168,7 +180,7 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService{
         if(findUser.isPresent()){
            return findUser.get().getUserDetails().getTmrs();
         }else{
-            throw new UserDoesNotExistsException(username);
+            throw new UserDoesNotExistsException();
         }
     }
 
@@ -201,7 +213,7 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService{
             }
 
         }else{
-            throw new UserDoesNotExistsException(username);
+            throw new UserDoesNotExistsException();
         }
     }
 
@@ -240,6 +252,9 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService{
                 break;
         }
         return Math.round(TMR * 100.0) / 100.0;
+    }
+    private long calculateAge(LocalDate dateOfBirth){
+        return ChronoUnit.YEARS.between(dateOfBirth, LocalDate.now());
     }
     private double calculateProtein(double weight){
         return Math.round((weight*1.9) * 100.0) / 100.0;

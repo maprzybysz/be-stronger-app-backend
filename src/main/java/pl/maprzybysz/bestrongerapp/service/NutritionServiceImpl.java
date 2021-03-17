@@ -35,7 +35,21 @@ public class NutritionServiceImpl implements NutritionService {
     }
 
     @Override
-    public void addMeal(Meal meal) {
+    public void addMeal(MealDTO mealDTO) {
+        Meal meal = new Meal();
+        meal.setName(mealDTO.getName());
+        meal.setGrammage(mealDTO.getGrammage());
+        meal.setGoodness(mealDTO.getGoodness());
+        meal.setProtein(mealDTO.getProtein());
+        meal.setCarbohydrates(mealDTO.getCarbohydrates());
+        meal.setFat(mealDTO.getFat());
+        MealDetails mealDetails = new MealDetails();
+        mealDetails.setDescription(mealDTO.getDescription());
+        mealDetails.setCreateDate(LocalDate.now());
+        mealDetails.setImgUrl(mealDTO.getImgUrl());
+        Optional<AppUser> user = appUserRepo.findByUsername(mealDTO.getAuthor());
+        meal.setAppUser(user.get());
+        meal.setMealDetails(mealDetails);
         mealRepo.save(meal);
     }
 
@@ -77,7 +91,7 @@ public class NutritionServiceImpl implements NutritionService {
         if(user.isPresent()){
             eatenMeal.setAppUser(user.get());
         }else {
-            throw new UserDoesNotExistsException(username);
+            throw new UserDoesNotExistsException();
         }
         eatenMealRepo.save(eatenMeal);
     }
@@ -93,7 +107,7 @@ public class NutritionServiceImpl implements NutritionService {
                 return eatenMeals.get();
             }
         }else {
-            throw new UserDoesNotExistsException(username);
+            throw new UserDoesNotExistsException();
         }
 
     }
@@ -109,7 +123,7 @@ public class NutritionServiceImpl implements NutritionService {
                 return eatenMeals.get();
             }
         }else {
-            throw new UserDoesNotExistsException(username);
+            throw new UserDoesNotExistsException();
         }
     }
 
@@ -127,7 +141,7 @@ public class NutritionServiceImpl implements NutritionService {
                 return eatenMeals.get();
             }
         }else {
-            throw new UserDoesNotExistsException(username);
+            throw new UserDoesNotExistsException();
         }
     }
     @Override
@@ -158,7 +172,7 @@ public class NutritionServiceImpl implements NutritionService {
             shoppingListElement.setAppUser(user.get());
             shoppingListElementRepo.save(shoppingListElement);
         }else{
-            throw new UserDoesNotExistsException(username);
+            throw new UserDoesNotExistsException();
         }
     }
 

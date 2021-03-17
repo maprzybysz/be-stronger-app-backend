@@ -18,8 +18,9 @@ public interface AppUserDetailsService {
     public void updateUserActivity(String username, String userActivity);
     public void updateUserHeight(String username, double userHeight);
     public void updateUserGoal(String username, String userGoal);
-    public void addTMRbyUsername(String username);
-    public void addTMRbyUser(AppUser appUser);
+    public void addTMRbyUsername(String username, LocalDate date);
+    public void addTMRbyUser(AppUser appUser,LocalDate date);
     public List<UserTMR> getUserTMRs(String username);
     public UserTMR getUserTMR(String date, String username);
+
 }

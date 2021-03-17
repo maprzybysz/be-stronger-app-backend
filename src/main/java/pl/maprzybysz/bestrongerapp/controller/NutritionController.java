@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.maprzybysz.bestrongerapp.exception.MealDoesNotExistsException;
 import pl.maprzybysz.bestrongerapp.Entity.EatenMeal;
-import pl.maprzybysz.bestrongerapp.Entity.Meal;
 import pl.maprzybysz.bestrongerapp.Entity.DTO.MealDTO;
 import pl.maprzybysz.bestrongerapp.Entity.ShoppingListElement;
 import pl.maprzybysz.bestrongerapp.service.AppUserService;
@@ -30,8 +29,13 @@ public class NutritionController {
     }
 
     @PostMapping("/addMeal")
-    public void addMeal(@RequestBody Meal meal) {
-        nutritionService.addMeal(meal);
+    public ResponseEntity<?> addMeal(@RequestBody MealDTO mealDTO) {
+        try{
+            nutritionService.addMeal(mealDTO);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @GetMapping("/getMealByName/{name}")

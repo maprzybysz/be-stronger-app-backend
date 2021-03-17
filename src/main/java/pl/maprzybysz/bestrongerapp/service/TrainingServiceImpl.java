@@ -58,8 +58,13 @@ public class TrainingServiceImpl implements TrainingService{
             }
             training.setEndTime(LocalDate.now());
         }else {
-            throw new UserDoesNotExistsException(username);
+            throw new UserDoesNotExistsException();
         }
         trainingRepo.save(training);
+    }
+
+    @Override
+    public void deleteTrainingById(Long id) {
+        trainingRepo.deleteById(id);
     }
 }

@@ -108,7 +108,7 @@ Aenean nisi nulla, interdum sit amet libero ac, elementum lacinia est. Quisque a
 interdum nisl nec ullamcorper. ', '2020-05-20', 'https://tricentre.pl/data/include/img/news/1585129978.jpg','Rozwoj
 sily 2', 1);
 INSERT INTO exercise (id, description, exercise_category, img_url, media_url, name)
-VALUES (1, 'opis', 'BARKI', null, null, 'OHP');
+VALUES (1, 'opis', 'BARKI', 'https://www.budujmase.pl/wp-content/uploads/Fotolia_186726267_Subscription_Monthly_M.jpg', null, 'OHP');
 INSERT INTO exercise (id, description, exercise_category, img_url, media_url, name)
 VALUES (2, 'opis', 'PLECY', null, null, 'Wiosłowanie');
 INSERT INTO exercise (id, description, exercise_category, img_url, media_url, name)

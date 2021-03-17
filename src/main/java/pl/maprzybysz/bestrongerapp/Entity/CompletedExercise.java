@@ -11,7 +11,7 @@ public class CompletedExercise {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String exerciseName;
-    @OneToMany(mappedBy = "completedExercise", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "completedExercise", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Series> series;
     @JsonIgnore
     @ManyToOne

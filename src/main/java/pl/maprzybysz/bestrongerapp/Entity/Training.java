@@ -13,7 +13,7 @@ public class Training {
     private Long id;
     private String trainingName;
     private LocalDate endTime;
-    @OneToMany(mappedBy = "training", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "training", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<CompletedExercise> exercises;
     @JsonIgnore
     @ManyToOne

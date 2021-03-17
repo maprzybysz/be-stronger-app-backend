@@ -10,4 +10,5 @@ public interface TrainingService {
     public List<Exercise> searchExercisesByNameContains(String name);
     public List<Training> getUserTrainingsByUserName(String username);
     public void saveTraining(Training training, String username);
+    public void deleteTrainingById(Long id);
 }

@@ -26,4 +26,5 @@ public class MealMapper {
         });
         return modelMapper;
     }
+
 }

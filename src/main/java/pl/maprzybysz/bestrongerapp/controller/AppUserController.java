@@ -1,13 +1,14 @@
 package pl.maprzybysz.bestrongerapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.maprzybysz.bestrongerapp.Entity.DTO.PasswordRecoveryDTO;
 import pl.maprzybysz.bestrongerapp.Entity.DTO.SignUpDTO;
-import pl.maprzybysz.bestrongerapp.exception.EmailAlreadyExistsException;
-import pl.maprzybysz.bestrongerapp.exception.UserAlreadyExistsException;
+import pl.maprzybysz.bestrongerapp.exception.*;
 import pl.maprzybysz.bestrongerapp.Entity.AppUser;
 import pl.maprzybysz.bestrongerapp.Entity.LoginCredentials;
 import pl.maprzybysz.bestrongerapp.service.AppUserService;
@@ -20,6 +21,8 @@ import java.io.IOException;
 public class AppUserController {
 
     private AppUserService appUserService;
+    @Value("${frontend.url}")
+    private String serverUrl;
 
     @Autowired
     public AppUserController(AppUserService appUserService) {
@@ -42,21 +45,68 @@ public class AppUserController {
     }
 
     @GetMapping("/verify-token/{token}")
-    public void verifyUser(@PathVariable String token, HttpServletResponse response) throws IOException {
-        appUserService.verifyToken(token);
-        appUserService.removeToken(token);
-        response.sendRedirect("http://localhost:3000/login");
+    public ResponseEntity<?> verifyUser(@PathVariable String token, HttpServletResponse response) throws IOException {
+        try{
+            appUserService.verifyToken(token);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Location", serverUrl+"/login");
+            return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+        }catch (InvalidTokenException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
-    @GetMapping("/send-recovery/{username}")
-    public void getRecoveryToken(@PathVariable String username) throws IOException {
-        appUserService.sendRecoveryToken(username);
 
+    @GetMapping("/send-recovery/{username}")
+    public ResponseEntity<?> getRecoveryToken(@PathVariable String username) throws IOException {
+        try{
+            appUserService.sendRecoveryToken(username);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }catch (UserDoesNotExistsException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
     @PostMapping("/restart-password")
-    public void restartPassword(@RequestBody PasswordRecoveryDTO passwordRecoveryDTO, HttpServletResponse response) throws IOException {
-        appUserService.restartPassword(passwordRecoveryDTO.getToken(), passwordRecoveryDTO.getPassword(), passwordRecoveryDTO.getConfirmPassword());
-        response.sendRedirect("http://localhost:3000/login");
+    public ResponseEntity<?> restartPassword(@RequestBody PasswordRecoveryDTO passwordRecoveryDTO, HttpServletResponse response) throws IOException {
+        try{
+            appUserService.restartPassword(passwordRecoveryDTO.getToken(), passwordRecoveryDTO.getPassword(), passwordRecoveryDTO.getConfirmPassword());
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }catch (PasswordAlreadyUsedException e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }catch (PasswordMismatchException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }catch (InvalidTokenException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
+    @GetMapping("/send-delete-token/{username}")
+    public ResponseEntity<?> getDeleteToken(@PathVariable String username, HttpServletRequest httpServletRequest) throws IOException {
+        try{
+            appUserService.sendDeleteToken(username, httpServletRequest);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }catch (UserDoesNotExistsException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+    @GetMapping("/delete-account/{token}")
+    public ResponseEntity<?> deleteAccount(@PathVariable String token) throws IOException {
+        try{
+            appUserService.deleteAccount(token);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Location", serverUrl+"/login");
+            return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+        } catch (InvalidTokenException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
 
 
     //method provide with spring security

@@ -58,7 +58,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST,"/login").permitAll()
                 .antMatchers(HttpMethod.POST,"/sign-up").permitAll()
                 .antMatchers(HttpMethod.GET,"/send-recovery/*").permitAll()
+                .antMatchers(HttpMethod.GET,"/send-delete-token/*").permitAll()
                 .antMatchers(HttpMethod.POST,"/restart-password").permitAll()
+                .antMatchers(HttpMethod.GET,"/delete-account/*").permitAll()
                 .antMatchers("/verify-token/*").permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -83,13 +85,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-       configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.setAllowedOrigins(Arrays.asList("*"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST","PUT", "DELETE"));
+        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

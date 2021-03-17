@@ -1,19 +1,30 @@
 package pl.maprzybysz.bestrongerapp.Entity.DTO;
 
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 public class MealDTO {
     private Long id;
+    @Size(min=3, max = 50)
+    @NotEmpty
     private String name;
-    private int grammage;
-    private int goodness;
-    private int protein;
-    private int carbohydrates;
-    private int fat;
+    @NotEmpty
+    private double grammage;
+    @NotEmpty
+    private double goodness;
+    @NotEmpty
+    private double protein;
+    @NotEmpty
+    private double carbohydrates;
+    @NotEmpty
+    private double fat;
+    @Size(max=400)
     private String description;
     private String imgUrl;
     private LocalDate createDate;
+    @NotEmpty
     private String author;
 
     public Long getId() {
@@ -32,43 +43,43 @@ public class MealDTO {
         this.name = name;
     }
 
-    public int getGrammage() {
+    public double getGrammage() {
         return grammage;
     }
 
-    public void setGrammage(int grammage) {
+    public void setGrammage(double grammage) {
         this.grammage = grammage;
     }
 
-    public int getGoodness() {
+    public double getGoodness() {
         return goodness;
     }
 
-    public void setGoodness(int goodness) {
+    public void setGoodness(double goodness) {
         this.goodness = goodness;
     }
 
-    public int getProtein() {
+    public double getProtein() {
         return protein;
     }
 
-    public void setProtein(int protein) {
+    public void setProtein(double protein) {
         this.protein = protein;
     }
 
-    public int getCarbohydrates() {
+    public double getCarbohydrates() {
         return carbohydrates;
     }
 
-    public void setCarbohydrates(int carbohydrates) {
+    public void setCarbohydrates(double carbohydrates) {
         this.carbohydrates = carbohydrates;
     }
 
-    public int getFat() {
+    public double getFat() {
         return fat;
     }
 
-    public void setFat(int fat) {
+    public void setFat(double fat) {
         this.fat = fat;
     }
 

@@ -23,19 +23,19 @@ public class AppUser implements UserDetails {
 	private String email;
 	private boolean isEnabled;
 	private boolean rulesAccepted;
-	@ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
 	private List<Role> roles;
-	@OneToMany(mappedBy = "appUser")
+	@OneToMany(mappedBy = "appUser", cascade = CascadeType.REMOVE)
 	private List<ShoppingListElement> shoppingList;
-	@OneToMany(mappedBy = "appUser")
+	@OneToMany(mappedBy = "appUser", cascade = CascadeType.REMOVE)
 	private List<EatenMeal> eatenMeals;
-	@OneToMany(mappedBy = "appUser")
+	@OneToMany(mappedBy = "appUser", cascade = CascadeType.REMOVE)
 	private List<Meal> createMeals;
 	@OneToOne(mappedBy = "appUser", cascade = CascadeType.ALL)
 	private AppUserDetails userDetails;
-	@OneToMany(mappedBy = "appUser")
+	@OneToMany(mappedBy = "appUser", cascade = CascadeType.REMOVE)
 	private List<Article> createArticles;
-	@OneToMany(mappedBy = "appUser")
+	@OneToMany(mappedBy = "appUser", cascade = CascadeType.REMOVE)
 	private List<Training> trainings;
 
 	public Long getId() {

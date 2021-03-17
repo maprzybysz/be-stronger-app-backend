@@ -1,41 +1,35 @@
 package pl.maprzybysz.bestrongerapp.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+
 
 @Entity
-
 public class Meal {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
-    @NotNull
     @Column(nullable = false, unique = true)
+    @Length(min = 5, max = 50)
     private String name;
-    @NotNull
     @Column(nullable = false)
-    private int grammage;
-    @NotNull
+    private double grammage;
     @Column(nullable = false)
-    private int goodness;
-    @NotNull
+    private double goodness;
     @Column(nullable = false)
-    private int protein;
-    @NotNull
+    private double protein;
     @Column(nullable = false)
-    private int carbohydrates;
-    @NotNull
+    private double carbohydrates;
     @Column(nullable = false)
-    private int fat;
-    @NotNull
+    private double fat;
     @ManyToOne
     @JoinColumn(name="app_user_id")
     @JsonIgnore
     private AppUser appUser;
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private MealDetails mealDetails;
 
     public Meal() {
@@ -57,43 +51,43 @@ public class Meal {
         this.name = name;
     }
 
-    public int getGrammage() {
+    public double getGrammage() {
         return grammage;
     }
 
-    public void setGrammage(int grammage) {
+    public void setGrammage(double grammage) {
         this.grammage = grammage;
     }
 
-    public int getGoodness() {
+    public double getGoodness() {
         return goodness;
     }
 
-    public void setGoodness(int goodness) {
+    public void setGoodness(double goodness) {
         this.goodness = goodness;
     }
 
-    public int getProtein() {
+    public double getProtein() {
         return protein;
     }
 
-    public void setProtein(int protein) {
+    public void setProtein(double protein) {
         this.protein = protein;
     }
 
-    public int getCarbohydrates() {
+    public double getCarbohydrates() {
         return carbohydrates;
     }
 
-    public void setCarbohydrates(int carbohydrates) {
+    public void setCarbohydrates(double carbohydrates) {
         this.carbohydrates = carbohydrates;
     }
 
-    public int getFat() {
+    public double getFat() {
         return fat;
     }
 
-    public void setFat(int fat) {
+    public void setFat(double fat) {
         this.fat = fat;
     }
 

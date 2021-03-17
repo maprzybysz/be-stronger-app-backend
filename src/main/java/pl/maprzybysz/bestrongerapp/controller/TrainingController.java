@@ -39,8 +39,17 @@ public class TrainingController {
     }
     @PostMapping("/save/{username}")
     public ResponseEntity<?> saveTrainingByUsername(@RequestBody Training training, @PathVariable String username){
-        System.out.println(training);
         trainingService.saveTraining(training, username);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteTrainingById(@PathVariable Long id){
+        try{
+            trainingService.deleteTrainingById(id);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
     }
 }
