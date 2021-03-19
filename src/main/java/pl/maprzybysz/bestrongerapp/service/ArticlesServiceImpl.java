@@ -32,7 +32,7 @@ public class ArticlesServiceImpl implements ArticleService {
         ArticleCategories categories = ArticleCategories.valueOf(category);
         Optional<List<Article>> articles = articleRepo.getArticleByCategory(categories);
         if (articles.isEmpty()) {
-            throw new ArticlesNotFoundException(category);
+            return List.of();
         } else {
             return articles.get();
         }

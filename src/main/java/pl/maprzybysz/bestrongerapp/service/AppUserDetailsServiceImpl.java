@@ -79,8 +79,16 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService{
     public void addWeight(UserWeight userWeight, String username) {
         Optional<AppUser> findUser = appUserRepo.findByUsername(username);
         if(findUser.isPresent()){
-            userWeight.setAppUserDetails(findUser.get().getUserDetails());
-            userWeightRepo.save(userWeight);
+            AppUserDetails details = findUser.get().getUserDetails();
+            Optional<UserWeight> findWeight =
+                    userWeightRepo.findUserWeightByAppUserDetailsIdAndDateAdded(details.getId(), userWeight.getDateAdded());
+            userWeight.setAppUserDetails(details);
+            if(findWeight.isEmpty()){
+                userWeightRepo.save(userWeight);
+            }else{
+                findWeight.get().setWeight(userWeight.getWeight());
+                userWeightRepo.save(findWeight.get());
+            }
             addTMRbyUsername(username, userWeight.getDateAdded());
         }else{
             throw new UserDoesNotExistsException();
@@ -129,49 +137,16 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService{
         Optional<AppUser> findUser = appUserRepo.findByUsername(username);
         if(findUser.isPresent()){
             AppUserDetails details = findUser.get().getUserDetails();
-            long userAge = calculateAge(details.getBirthday());
-            double BMR = calculateBMR(details.getLastWeight(), details.getHeight(), userAge, details.getSex());
-            double TMR = calculateTMR(BMR, details.getUserActivity(), details.getUserGoal());
-            double protein = calculateProtein(details.getLastWeight());
-            double fat = calculateFat(TMR);
-            double carbohydrates = calculateCarbohydrates(TMR, protein, fat);
-            UserTMR userTMR = new UserTMR();
-            userTMR.setTmr(TMR);
-            userTMR.setProtein(protein);
-            userTMR.setFat(fat);
-            userTMR.setCarbohydrates(carbohydrates);
-            if(date==null){
-                userTMR.setDateAdded(LocalDate.now());
-            }else {
-                userTMR.setDateAdded(date);
-            }
-            userTMR.setAppUserDetails(details);
-            userTMRRepo.save(userTMR);
-        }else{
+            saveTMR(details, date);
+           }else{
             throw new UserDoesNotExistsException();
         }
     }
+
     @Override
     public void addTMRbyUser(AppUser appUser, LocalDate date) {
         AppUserDetails details = appUser.getUserDetails();
-        long userAge = calculateAge(details.getBirthday());
-        double BMR = calculateBMR(details.getLastWeight(), details.getHeight(), userAge, details.getSex());
-        double TMR = calculateTMR(BMR, details.getUserActivity(), details.getUserGoal());
-        double protein = calculateProtein(details.getLastWeight());
-        double fat = calculateFat(TMR);
-        double carbohydrates = calculateCarbohydrates(TMR, protein, fat);
-        UserTMR userTMR = new UserTMR();
-        userTMR.setTmr(TMR);
-        userTMR.setProtein(protein);
-        userTMR.setFat(fat);
-        userTMR.setCarbohydrates(carbohydrates);
-        if(date==null){
-            userTMR.setDateAdded(LocalDate.now());
-        }else {
-            userTMR.setDateAdded(date);
-        }
-        userTMR.setAppUserDetails(details);
-        userTMRRepo.save(userTMR);
+        saveTMR(details, date);
     }
 
     @Override
@@ -216,6 +191,37 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService{
             throw new UserDoesNotExistsException();
         }
     }
+    private void saveTMR(AppUserDetails details, LocalDate date){
+        UserTMR newTMR = getTMR(details, date);
+        Optional<UserTMR> findTMR = userTMRRepo.findUserTMRByAppUserDetailsIdAndDateAdded(details.getId(),
+                newTMR.getDateAdded());
+        if(findTMR.isPresent()){
+            newTMR.setId(findTMR.get().getId());
+            userTMRRepo.save(newTMR);
+        }else{
+            userTMRRepo.save(newTMR);
+        }
+    }
+    private UserTMR getTMR(AppUserDetails details, LocalDate date){
+        long userAge = calculateAge(details.getBirthday());
+        double BMR = calculateBMR(details.getLastWeight(), details.getHeight(), userAge, details.getSex());
+        double TMR = calculateTMR(BMR, details.getUserActivity(), details.getUserGoal());
+        double protein = calculateProtein(details.getLastWeight());
+        double fat = calculateFat(TMR);
+        double carbohydrates = calculateCarbohydrates(TMR, protein, fat);
+        UserTMR userTMR = new UserTMR();
+        userTMR.setTmr(TMR);
+        userTMR.setProtein(protein);
+        userTMR.setFat(fat);
+        userTMR.setCarbohydrates(carbohydrates);
+        if(date==null){
+            userTMR.setDateAdded(LocalDate.now());
+        }else{
+            userTMR.setDateAdded(date);
+        }
+        userTMR.setAppUserDetails(details);
+        return userTMR;
+    }
 
     private double calculateBMR(double weight, double height, long userAge, String sex){
         if(sex.equals("Mężczyzna")){
@@ -225,6 +231,7 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService{
         }
 
     }
+
     private double calculateTMR(double BMR, UserActivity userActivity, UserGoal userGoal){
         double TMR = 0;
         switch(userActivity){
@@ -265,7 +272,8 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService{
     private double calculateCarbohydrates(double TMR, double protein, double fat){
         double proteinKcal = protein*4;
         double fatKcal = fat*9;
-       return Math.round((((TMR-proteinKcal-fatKcal)/4) * 100.0) / 100.0);
+        return Math.round((((TMR-proteinKcal-fatKcal)/4) * 100.0) / 100.0);
     }
+
 
 }
