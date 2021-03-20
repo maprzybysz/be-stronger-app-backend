@@ -114,9 +114,15 @@ public class AppUserServiceImpl implements AppUserService {
         if(appUser.isEmpty()){
             throw new UserDoesNotExistsException();
         }else{
-            String token = UUID.randomUUID().toString();
-            RecoveryToken recoveryToken = new RecoveryToken(token, appUser.get());
-            recoveryTokenRepo.save(recoveryToken);
+            Optional<RecoveryToken> findToken = recoveryTokenRepo.findRecoveryTokenByAppUserId(appUser.get().getId());
+            String token;
+            if(findToken.isPresent()){
+                token = findToken.get().getValue();
+            }else{
+                token = UUID.randomUUID().toString();
+                RecoveryToken recoveryToken = new RecoveryToken(token, appUser.get());
+                recoveryTokenRepo.save(recoveryToken);
+            }
             String url = serverUrl+"/recoverypassword/"+token;
             try {
                 mailSenderService.sendMail(appUser.get().getEmail(), "Restart hasła", url, false);
@@ -131,9 +137,15 @@ public class AppUserServiceImpl implements AppUserService {
         if(appUser.isEmpty()){
             throw new UserDoesNotExistsException();
         }else{
-            String token = UUID.randomUUID().toString();
-            DeleteToken deleteToken = new DeleteToken(token, appUser.get());
-            deleteTokenRepo.save(deleteToken);
+            String token;
+            Optional<DeleteToken> findToken = deleteTokenRepo.findDeleteTokenByAppUserId(appUser.get().getId());
+            if(findToken.isPresent()){
+                token = findToken.get().getValue();
+            }else{
+                token = UUID.randomUUID().toString();
+                DeleteToken deleteToken = new DeleteToken(token, appUser.get());
+                deleteTokenRepo.save(deleteToken);
+            }
             String url = "http://" + request.getServerName() + ":" + request.getServerPort()+request.getContextPath()+
                     "/delete-account/"+token;
             try {
@@ -143,7 +155,6 @@ public class AppUserServiceImpl implements AppUserService {
             }
         }
     }
-
     @Override
     public void deleteAccount(String token) {
         Optional<DeleteToken> deleteToken = deleteTokenRepo.findByValue(token);

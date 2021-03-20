@@ -10,5 +10,6 @@ import java.util.Optional;
 @Repository
 public interface RecoveryTokenRepo extends JpaRepository<RecoveryToken, Long> {
     Optional<RecoveryToken> findByValue(String value);
+    Optional<RecoveryToken> findRecoveryTokenByAppUserId(Long id);
     void deleteByValue(String value);
 }

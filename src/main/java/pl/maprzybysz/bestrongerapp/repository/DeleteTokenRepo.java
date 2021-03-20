@@ -10,5 +10,6 @@ import java.util.Optional;
 @Repository
 public interface DeleteTokenRepo extends JpaRepository<DeleteToken, Long> {
     Optional<DeleteToken> findByValue(String value);
+    Optional<DeleteToken> findDeleteTokenByAppUserId(Long id);
     void deleteByValue(String value);
 }
