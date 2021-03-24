@@ -37,7 +37,17 @@ public class NutritionController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-
+    @GetMapping("/getTopMeal")
+    public ResponseEntity<?> getTopMeal() {
+        try{
+            List<MealDTO> meals = nutritionService.getTop10Meal();
+            return ResponseEntity.ok(meals);
+        }catch (MealDoesNotExistsException e){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(e.getMessage());
+        }catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+    }
     @GetMapping("/getMealByName/{name}")
     public ResponseEntity<?> getMealDTOByName(@PathVariable String name) {
         try{

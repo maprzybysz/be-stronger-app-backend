@@ -271,8 +271,14 @@ public class AppUserDetailsServiceImpl implements AppUserDetailsService{
     }
     private double calculateCarbohydrates(double TMR, double protein, double fat){
         double proteinKcal = protein*4;
+        System.out.println(proteinKcal);
         double fatKcal = fat*9;
+        System.out.println(fatKcal);
+        System.out.println(TMR);
+        System.out.println(calculateAge(LocalDate.of(1969,8,15)));
+        System.out.println(Math.round((((TMR-proteinKcal-fatKcal)/4) * 100.0) / 100.0));
         return Math.round((((TMR-proteinKcal-fatKcal)/4) * 100.0) / 100.0);
+
     }
 
 

@@ -71,6 +71,20 @@ public class NutritionServiceImpl implements NutritionService {
             return MealMapper.mealToMealDTO().map(findMeal.get(), MealDTO.class);
         }
     }
+
+    @Override
+    public List<MealDTO> getTop10Meal() {
+        Optional<List<Meal>> findMeals = mealRepo.findTop10ByOrderByNameAsc();
+        List<MealDTO> mealDTOS = new ArrayList<>();
+        if(findMeals.isEmpty()){
+            return List.of();
+        }else{
+            for (Meal meal: findMeals.get()){
+                mealDTOS.add(MealMapper.mealToMealDTO().map(meal, MealDTO.class));
+            }
+            return mealDTOS;
+        }
+    }
     @Override
     public List<MealDTO> searchMealByNameContains(String name) {
         Optional<List<Meal>> findMeals = mealRepo.findByNameContains(name);

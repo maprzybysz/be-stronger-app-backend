@@ -12,6 +12,7 @@ public interface NutritionService {
     public void addMeal(MealDTO meal);
     public Meal getMealByName(String name);
     public MealDTO getMealDTOByName(String name);
+    public List<MealDTO> getTop10Meal();
     public List<MealDTO> searchMealByNameContains(String name);
     public void saveEatenMeal(EatenMeal eatenMeal, String username);
     public List<EatenMeal> getEatenMealsByUsername(String username);
